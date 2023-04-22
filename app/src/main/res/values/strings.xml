@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name" translatable="false">Git Test</string>
+    <string name="token">Personal access token</string>
+    <string name="sign_in">Sign In</string>
+    <string name="invalid_token">Invalid token</string>
+    <string name="repositories">Repositories</string>
+    <string name="connection_error">Connection error</string>
+    <string name="check_network">Check your Internet connection</string>
+    <string name="empty">Empty</string>
+    <string name="no_repositories">No repositories at the moment</string>
+    <string name="retry">Retry</string>
+    <string name="refresh">Refresh</string>
+
+</resources>

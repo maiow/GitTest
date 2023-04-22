@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+    <item name="windowSplashScreenBackground">@color/background</item>
+    <!-- Use windowSplashScreenAnimatedIcon to add either a drawable or an
+         animated drawable. One of these is required. @drawable/logo_splashscreen -->
+    <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+    <item name="windowSplashScreenAnimationDuration">800</item>
+    <item name="postSplashScreenTheme">@style/Theme.GitTest</item>
+    </style>
+</resources>

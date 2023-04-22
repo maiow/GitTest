@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/authFragment">
+
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="com.mivanovskaya.gittest.presentation.auth.AuthFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_auth">
+
+        <!--action
+                        app:popUpToInclusive="true" /-->
+
+        <action
+            android:id="@+id/action_authFragment_to_repositoriesListFragment"
+            app:destination="@id/repositoriesListFragment"
+            app:popUpTo="@id/repositoriesListFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/repositoriesListFragment"
+        android:name="com.mivanovskaya.gittest.presentation.repositories_list.RepositoriesListFragment"
+        android:label="fragment_repositories_list"
+        tools:layout="@layout/fragment_repositories_list" >
+        <action
+            android:id="@+id/action_repositoriesListFragment_to_detailInfoFragment"
+            app:destination="@id/detailInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailInfoFragment"
+        android:name="com.mivanovskaya.gittest.presentation.detail_info.DetailInfoFragment"
+        android:label="fragment_detail_info"
+        tools:layout="@layout/fragment_detail_info" />
+
+</navigation>
