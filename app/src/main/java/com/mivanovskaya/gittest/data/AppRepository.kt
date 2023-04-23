@@ -1,10 +1,14 @@
 package com.mivanovskaya.gittest.data
 
-class AppRepository {
+import com.mivanovskaya.gittest.data.model.Repo
+import com.mivanovskaya.gittest.data.model.UserInfo
+import javax.inject.Inject
+
+class AppRepository @Inject constructor(private val api: Api){
 //    suspend fun getRepositories(): List<Repo> {
-//        // TODO:
+//        return api.getRepositories(user = UserInfo.login)
 //    }
-//
+
 //    suspend fun getRepository(repoId: String): RepoDetails {
 //        // TODO:
 //    }
@@ -13,9 +17,9 @@ class AppRepository {
 //        // TODO:
 //    }
 //
-//    suspend fun signIn(token: String): UserInfo {
-//        // TODO:
-//    }
+    suspend fun signIn(token: String): UserInfo {
+        return api.getUserInfo(token)
+    }
 
     // TODO:
 }

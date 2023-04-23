@@ -1,5 +1,9 @@
 package com.mivanovskaya.gittest.data
 
 class KeyValueStorage {
-    var authToken: String? = ""
+
+    //SharedPreferences.
+    companion object {
+        var authToken: String? = null
+    }
 }

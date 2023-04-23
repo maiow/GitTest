@@ -16,49 +16,40 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:id="@+id/edit_text"
         android:layout_width="0dp"
         android:layout_height="41dp"
-        android:layout_marginTop="55dp"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="55dp"
+        android:autofillHints="text"
         android:hint="@string/token"
-        android:paddingHorizontal="12dp"
-        android:textSize="16sp"
-        tools:text="@string/token"
-        android:textAlignment="center"
+        android:inputType="textVisiblePassword"
         android:textColor="@color/white_50_opacity"
+        android:theme="@style/MyEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        />
-
-    <!--com.google.android.material.textfield.TextInputLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="55dp"
-        android:hint="@string/token"
-        app:endIconMode="clear_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_token"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textVisiblePassword"
-            android:textColor="@color/white_50_opacity"
-            android:minHeight="48dp" />
-    </com.google.android.material.textfield.TextInputLayout-->
+        tools:text="@string/token" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/auth_button"
+        android:id="@+id/sign_button"
+        style="@style/GreenButton"
         android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_height="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="@string/sign_in" />
+
+    <ProgressBar
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/sign_button"
+        app:layout_constraintEnd_toEndOf="@+id/sign_button"
+        app:layout_constraintStart_toStartOf="@+id/sign_button"
+        app:layout_constraintTop_toTopOf="@+id/sign_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

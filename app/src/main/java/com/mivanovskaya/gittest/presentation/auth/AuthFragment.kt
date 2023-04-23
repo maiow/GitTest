@@ -1,8 +1,7 @@
 package com.mivanovskaya.gittest.presentation.auth
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,8 @@ class AuthFragment : Fragment() {
 
     private val viewModel by viewModels<AuthViewModel>()
 
+    private var tokenInputByUser = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,13 +31,32 @@ class AuthFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setAuthorizationButton()
+        //setEditText()
+        setSignButton()
     }
 
-    private fun setAuthorizationButton() {
-        binding.authButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AUTH_CALL))
-            startActivity(intent)
+//    private fun setEditText() {
+//        tokenInputByUser = binding.editText.text.toString()
+//        setOnTextListener(object : SearchView.OnQueryTextListener,
+//            android.widget.SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String): Boolean {
+//                if (query.isNotEmpty()) viewModel.onSearchButtonClick(query)
+//                return false
+//            }
+//
+//            override fun onQueryTextChange(newText: String?): Boolean {
+//                return false
+//            }
+//        })
+//    }
+
+    private fun setSignButton() {
+        binding.signButton.setOnClickListener {
+            Log.i("BRED", "edit text is ${binding.editText.text}")
+            viewModel.onSignButtonPressed(binding.editText.text.toString())
+         //   findNavController().navigate(R.id.action_authFragment_to_repositoriesListFragment)
+//            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AUTH_CALL))
+//            startActivity(intent)
         }
     }
 

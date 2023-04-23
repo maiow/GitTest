@@ -10,5 +10,6 @@
     <string name="no_repositories">No repositories at the moment</string>
     <string name="retry">Retry</string>
     <string name="refresh">Refresh</string>
+    <string name="logout">Logout</string>
 
 </resources>
