@@ -21,6 +21,9 @@
         android:name="com.mivanovskaya.gittest.presentation.repositories_list.RepositoriesListFragment"
         android:label="fragment_repositories_list"
         tools:layout="@layout/fragment_repositories_list">
+        <argument
+            android:name="name"
+            app:argType="string" />
         <action
             android:id="@+id/action_repositoriesListFragment_to_detailInfoFragment"
             app:destination="@id/detailInfoFragment" />

@@ -5,10 +5,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import com.mivanovskaya.gittest.R
 import com.mivanovskaya.gittest.databinding.FragmentAuthBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AuthFragment : Fragment() {
@@ -33,38 +40,46 @@ class AuthFragment : Fragment() {
 
         //setEditText()
         setSignButton()
-    }
 
-//    private fun setEditText() {
-//        tokenInputByUser = binding.editText.text.toString()
-//        setOnTextListener(object : SearchView.OnQueryTextListener,
-//            android.widget.SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String): Boolean {
-//                if (query.isNotEmpty()) viewModel.onSearchButtonClick(query)
-//                return false
-//            }
-//
-//            override fun onQueryTextChange(newText: String?): Boolean {
-//                return false
-//            }
-//        })
-//    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state -> updateUi(state) }
+            }
+        }
+    }
 
     private fun setSignButton() {
         binding.signButton.setOnClickListener {
-            Log.i("BRED", "edit text is ${binding.editText.text}")
-            viewModel.onSignButtonPressed(binding.editText.text.toString())
-         //   findNavController().navigate(R.id.action_authFragment_to_repositoriesListFragment)
-//            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AUTH_CALL))
-//            startActivity(intent)
+            Log.i("BRED", "AuthFrag: edit text is ${binding.editText.text}")
+            if (binding.editText.text.isNotEmpty())
+                viewModel.onSignButtonPressed(binding.editText.text.toString())
+
         }
     }
+
+    private fun updateUi(state: AuthViewModel.State) {
+        when (state) {
+            AuthViewModel.State.Loading -> {
+                binding.progressBar.isVisible = true
+                binding.signButton.setTextColor(resources.getColor(R.color.accent))
+                //binding.common.progressBar.isVisible = true
+                //binding.common.error.isVisible = false
+            }
+
+            is AuthViewModel.State.Idle -> {
+                binding.progressBar.isVisible = false
+                //binding.common.error.isVisible = false
+            }
+
+            is AuthViewModel.State.InvalidInput -> {
+                binding.testText.text = state.reason
+            }
+        }
+    }
+    //findNavController().navigate(R.id.action_authFragment_to_repositoriesListFragment/*, state.some.login*/)
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-    companion object{
-        const val AUTH_CALL = ""
     }
 }

@@ -25,31 +25,45 @@
         android:hint="@string/token"
         android:inputType="textVisiblePassword"
         android:textColor="@color/white_50_opacity"
+        android:textColorHighlight="@color/white"
         android:theme="@style/MyEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
         tools:text="@string/token" />
 
+    <TextView
+        android:id="@+id/test_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textAlignment="center"
+        android:textSize="48sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/sign_button"
         style="@style/GreenButton"
         android:layout_width="0dp"
         android:layout_height="36dp"
+        android:text="@string/sign_in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="@string/sign_in" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
+        android:id="@+id/progress_bar"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:elevation="7dp"
         android:indeterminate="true"
-        android:indeterminateTintMode="src_atop"
         android:indeterminateTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/sign_button"
-        app:layout_constraintEnd_toEndOf="@+id/sign_button"
-        app:layout_constraintStart_toStartOf="@+id/sign_button"
-        app:layout_constraintTop_toTopOf="@+id/sign_button" />
+        android:indeterminateTintMode="src_in"
+        app:layout_constraintBottom_toBottomOf="@id/sign_button"
+        app:layout_constraintEnd_toEndOf="@id/sign_button"
+        app:layout_constraintStart_toStartOf="@id/sign_button"
+        app:layout_constraintTop_toTopOf="@id/sign_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

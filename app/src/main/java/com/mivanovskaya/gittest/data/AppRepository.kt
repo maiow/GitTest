@@ -4,12 +4,15 @@ import com.mivanovskaya.gittest.data.model.Repo
 import com.mivanovskaya.gittest.data.model.UserInfo
 import javax.inject.Inject
 
-class AppRepository @Inject constructor(private val api: Api){
+class AppRepository @Inject constructor(
+    private val api: Api,
+    private val keyValueStorage: KeyValueStorage
+) {
 //    suspend fun getRepositories(): List<Repo> {
 //        return api.getRepositories(user = UserInfo.login)
 //    }
 
-//    suspend fun getRepository(repoId: String): RepoDetails {
+    //    suspend fun getRepository(repoId: String): RepoDetails {
 //        // TODO:
 //    }
 //
@@ -18,8 +21,8 @@ class AppRepository @Inject constructor(private val api: Api){
 //    }
 //
     suspend fun signIn(token: String): UserInfo {
-        return api.getUserInfo(token)
-    }
+        keyValueStorage.authToken = token
 
-    // TODO:
+        return api.getUserInfo()
+    }
 }
