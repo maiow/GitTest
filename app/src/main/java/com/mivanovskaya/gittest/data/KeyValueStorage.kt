@@ -2,7 +2,6 @@ package com.mivanovskaya.gittest.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -24,7 +23,6 @@ class KeyValueStorage @Inject constructor(@ApplicationContext context: Context) 
         set(token) {
             editor.putString(AUTH_TOKEN, token).apply()
             authTokenEnabled = true
-            Log.i("BRED", "KVS: authTkn = $authToken & authTknEnabl = $authTokenEnabled")
         }
 
     var authTokenEnabled: Boolean

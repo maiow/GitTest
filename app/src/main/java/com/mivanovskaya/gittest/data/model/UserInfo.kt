@@ -1,5 +1,8 @@
 package com.mivanovskaya.gittest.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UserInfo(
 //    val avatar_url: String,
 //    val bio: Any?,

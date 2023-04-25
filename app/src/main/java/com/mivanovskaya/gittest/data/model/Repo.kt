@@ -1,5 +1,8 @@
 package com.mivanovskaya.gittest.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Repo(
 //    val allow_forking: Boolean,
 //    val archive_url: String,
@@ -17,7 +20,7 @@ data class Repo(
 //    val created_at: String,
 //    val default_branch: String,
 //    val deployments_url: String,
-    val description: String?, //нужен
+    val description: String?,
 //    val disabled: Boolean,
 //    val downloads_url: String,
 //    val events_url: String,
@@ -46,13 +49,13 @@ data class Repo(
 //    val issues_url: String,
 //    val keys_url: String,
 //    val labels_url: String,
-    val language: String?, //нужен
+    val language: String?,
 //    val languages_url: String,
 //    val license: License?,
 //    val merges_url: String,
 //    val milestones_url: String,
 //    val mirror_url: Any?,
-    val name: String, //нужен
+    val name: String, 
 //    val node_id: String,
 //    val notifications_url: String,
 //    val open_issues: Int,

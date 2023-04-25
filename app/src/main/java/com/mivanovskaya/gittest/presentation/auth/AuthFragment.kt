@@ -25,8 +25,6 @@ class AuthFragment : Fragment() {
 
     private val viewModel by viewModels<AuthViewModel>()
 
-    private var tokenInputByUser = ""
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,7 +48,6 @@ class AuthFragment : Fragment() {
 
     private fun setSignButton() {
         binding.signButton.setOnClickListener {
-            Log.i("BRED", "AuthFrag: edit text is ${binding.editText.text}")
             if (binding.editText.text.isNotEmpty())
                 viewModel.onSignButtonPressed(binding.editText.text.toString())
 
@@ -64,6 +61,7 @@ class AuthFragment : Fragment() {
                 binding.signButton.setTextColor(resources.getColor(R.color.accent))
                 //binding.common.progressBar.isVisible = true
                 //binding.common.error.isVisible = false
+
             }
 
             is AuthViewModel.State.Idle -> {
@@ -72,6 +70,8 @@ class AuthFragment : Fragment() {
             }
 
             is AuthViewModel.State.InvalidInput -> {
+                binding.progressBar.isVisible = false
+                binding.signButton.setTextColor(resources.getColor(R.color.white))
                 binding.testText.text = state.reason
             }
         }

@@ -7,7 +7,7 @@ plugins {
     //id("com.google.gms.google-services") version "4.3.15" apply false
     id("androidx.navigation.safeargs.kotlin") version "2.5.3" apply false
     id("com.google.dagger.hilt.android") version "2.45" apply false
-    kotlin("plugin.serialization") version "1.8.20"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.20"
 }
 
 tasks.register<Delete>("clean"){
