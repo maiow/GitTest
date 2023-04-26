@@ -7,13 +7,27 @@
     tools:context=".presentation.auth.AuthFragment">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/logo"
         android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/edit_text_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="@string/token"
+        android:textColor="@color/secondary"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/edit_text"
+        app:layout_constraintStart_toStartOf="@+id/edit_text"
+        tools:visibility="visible" />
 
     <EditText
         android:id="@+id/edit_text"
@@ -21,23 +35,37 @@
         android:layout_height="41dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="55dp"
+
         android:autofillHints="text"
         android:hint="@string/token"
         android:inputType="textVisiblePassword"
-        android:textColor="@color/white_50_opacity"
+        android:textColor="@color/white"
         android:textColorHighlight="@color/white"
         android:theme="@style/MyEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        app:layout_constraintWidth_max="320dp"
         tools:text="@string/token" />
+
+    <TextView
+        android:id="@+id/invalid_token_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="@string/invalid_token"
+        android:textColor="@color/error"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/edit_text"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text" />
 
     <TextView
         android:id="@+id/test_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
         android:textAlignment="center"
+        android:textColor="@color/white"
         android:textSize="48sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -11,6 +11,9 @@
     <string name="no_repositories">В настоящее время репозиториев нет</string>
     <string name="retry">Повторить попытку</string>
     <string name="refresh">Обновить</string>
-    <string name="logout">Logout</string>
+    <string name="logout">Выйти</string>
+    <string name="error">Ошибка</string>
+    <string name="ok">ОК</string>
+    <string name="logo">логотип</string>
 
 </resources>

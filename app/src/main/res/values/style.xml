@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-    <item name="windowSplashScreenBackground">@color/background</item>
-    <!-- Use windowSplashScreenAnimatedIcon to add either a drawable or an
-         animated drawable. One of these is required. @drawable/logo_splashscreen -->
-    <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
-    <item name="windowSplashScreenAnimationDuration">800</item>
-    <item name="postSplashScreenTheme">@style/Theme.GitTest</item>
+        <item name="windowSplashScreenBackground">@color/background</item>
+        <!-- Use windowSplashScreenAnimatedIcon to add either a drawable or an
+             animated drawable. One of these is required. @drawable/logo_splashscreen -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="windowSplashScreenAnimationDuration">800</item>
+        <item name="postSplashScreenTheme">@style/Theme.GitTest</item>
     </style>
 
     <style name="GreenButton" parent="Widget.Material3.Button.ElevatedButton">
@@ -21,12 +22,15 @@
         <item name="android:insetBottom">0dp</item>
         <item name="android:layout_marginBottom">17dp</item>
         <item name="cornerRadius">8dp</item>
+        <item name="layout_constraintWidth_max">320dp</item>
     </style>
 
     <style name="MyEditText" parent="Widget.AppCompat.EditText">
         <item name="colorControlNormal">@color/grey</item>
         <item name="colorControlActivated">@color/secondary</item>
         <item name="colorControlHighlight">@color/error</item>
+        <!--item name="boxStrokeColor">@color/error</item-->
+        <item name="layout_constraintWidth_max">320dp</item>
         <item name="android:paddingStart">12dp</item>
         <item name="android:paddingEnd">12dp</item>
         <item name="android:textSize">16sp</item>

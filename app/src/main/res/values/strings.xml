@@ -11,5 +11,8 @@
     <string name="retry">Retry</string>
     <string name="refresh">Refresh</string>
     <string name="logout">Logout</string>
+    <string name="error">Error</string>
+    <string name="ok">OK</string>
+    <string name="logo">logo</string>
 
 </resources>

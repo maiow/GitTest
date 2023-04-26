@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
 
-        if (keyValueStorage.authTokenEnabled)
-            navController.navigate(R.id.action_authFragment_to_repositoriesListFragment)
+//        if (keyValueStorage.authTokenEnabled)
+//            navController.navigate(R.id.action_authFragment_to_repositoriesListFragment)
     }
 }

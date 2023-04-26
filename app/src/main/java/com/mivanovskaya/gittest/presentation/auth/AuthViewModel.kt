@@ -9,14 +9,10 @@ import com.mivanovskaya.gittest.data.model.UserInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,11 +27,13 @@ class AuthViewModel @Inject constructor(
     private val _state = MutableStateFlow<State>(State.Idle)
     val state = _state.asStateFlow()
 
-    val actions: Flow<Action> = emptyFlow<Action>()
+    private val _actions = MutableSharedFlow<Action>()
+    val actions = _actions.asSharedFlow()
 
     private val handler = CoroutineExceptionHandler { _, e ->
         Log.i("BRED", "message is: ${e.message} & error is: $e")
         _state.value = State.InvalidInput(e.message.toString())
+        //_actions.emit(Action.ShowError("${e.message}"))
         keyValueStorage.authTokenEnabled = false
         Log.i("BRED", "VM: KVS TknEn = ${keyValueStorage.authTokenEnabled}")
     }
@@ -45,9 +43,9 @@ class AuthViewModel @Inject constructor(
             _state.value = State.Loading
             Log.i("BRED", "VM: token is $token")
             repository.signIn(token)
+            _actions.emit(Action.RouteToMain)
             //go to next screen with args?
             //_state.value = State.Idle
-
         }
     }
 
