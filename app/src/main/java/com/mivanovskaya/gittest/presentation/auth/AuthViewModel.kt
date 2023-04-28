@@ -9,6 +9,7 @@ import com.mivanovskaya.gittest.data.model.UserInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -23,7 +24,7 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
 
     // val token: MutableLiveData<String>
-    // val state: LiveData<State>
+
     private val _state = MutableStateFlow<State>(State.Idle)
     val state = _state.asStateFlow()
 
@@ -39,13 +40,17 @@ class AuthViewModel @Inject constructor(
     }
 
     fun onSignButtonPressed(token: String) {
-        viewModelScope.launch(Dispatchers.IO + handler) {
-            _state.value = State.Loading
-            Log.i("BRED", "VM: token is $token")
-            repository.signIn(token)
-            _actions.emit(Action.RouteToMain)
-            //go to next screen with args?
-            //_state.value = State.Idle
+        if (isNotValid(token)) {
+            _state.value = State.InvalidInput("Cyrillic characters are not allowed")
+        } else {
+            viewModelScope.launch(Dispatchers.IO + handler) {
+                _state.value = State.Loading
+                delay(2000)
+                Log.i("BRED", "VM: token is $token")
+                repository.signIn(token)
+                _state.value = State.Idle
+                _actions.emit(Action.RouteToMain)
+            }
         }
     }
 
@@ -60,6 +65,8 @@ class AuthViewModel @Inject constructor(
         object RouteToMain : Action
     }
 
-// TODO:
+    private fun isNotValid(token: String): Boolean {
+        return (token.contains(Regex("""[ЁёА-я]""")))
+    }
 
 }

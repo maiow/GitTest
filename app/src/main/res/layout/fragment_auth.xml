@@ -22,30 +22,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:text="@string/token"
-        android:textColor="@color/secondary"
+        android:textColor="@color/background"
         android:textSize="12sp"
-        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/edit_text"
-        app:layout_constraintStart_toStartOf="@+id/edit_text"
-        tools:visibility="visible" />
+        app:layout_constraintStart_toStartOf="@+id/edit_text" />
 
     <EditText
         android:id="@+id/edit_text"
         android:layout_width="0dp"
         android:layout_height="41dp"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="55dp"
-
         android:autofillHints="text"
         android:hint="@string/token"
-        android:inputType="textVisiblePassword"
-        android:textColor="@color/white"
-        android:textColorHighlight="@color/white"
+        android:inputType="text"
         android:theme="@style/MyEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo"
-        app:layout_constraintWidth_max="320dp"
+        app:layout_constraintWidth_max="328dp"
         tools:text="@string/token" />
 
     <TextView
