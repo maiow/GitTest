@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.mivanovskaya.gittest.databinding.FragmentAuthBinding
 import com.mivanovskaya.gittest.databinding.FragmentDetailInfoBinding
 import com.mivanovskaya.gittest.presentation.auth.AuthViewModel
@@ -17,11 +18,12 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
 
     override fun initBinding(inflater: LayoutInflater) = FragmentDetailInfoBinding.inflate(inflater)
     private val viewModel by viewModels<RepositoryInfoViewModel>()
+    private val args by navArgs<DetailInfoFragmentArgs>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //   binding...
+           binding.testText.text = args.repoId
     }
 
 }

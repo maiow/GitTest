@@ -1,15 +1,13 @@
 package com.mivanovskaya.gittest.presentation.auth
 
-import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mivanovskaya.gittest.data.AppRepository
 import com.mivanovskaya.gittest.data.KeyValueStorage
-import com.mivanovskaya.gittest.data.model.UserInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -23,7 +21,7 @@ class AuthViewModel @Inject constructor(
     private val keyValueStorage: KeyValueStorage
 ) : ViewModel() {
 
-    // val token: MutableLiveData<String>
+    private val token: MutableLiveData<String> = MutableLiveData()
 
     private val _state = MutableStateFlow<State>(State.Idle)
     val state = _state.asStateFlow()
@@ -31,12 +29,20 @@ class AuthViewModel @Inject constructor(
     private val _actions = MutableSharedFlow<Action>()
     val actions = _actions.asSharedFlow()
 
+    init {
+        token.value = keyValueStorage.authToken
+        if (!token.value.isNullOrBlank()) {
+            viewModelScope.launch {
+                _actions.emit(Action.RouteToMain)
+            }
+        }
+    }
+
     private val handler = CoroutineExceptionHandler { _, e ->
-        Log.i("BRED", "message is: ${e.message} & error is: $e")
+        viewModelScope.launch {
+            _actions.emit(Action.ShowError("${e.message}"))}
+        keyValueStorage.authToken = null
         _state.value = State.InvalidInput(e.message.toString())
-        //_actions.emit(Action.ShowError("${e.message}"))
-        keyValueStorage.authTokenEnabled = false
-        Log.i("BRED", "VM: KVS TknEn = ${keyValueStorage.authTokenEnabled}")
     }
 
     fun onSignButtonPressed(token: String) {
@@ -45,9 +51,7 @@ class AuthViewModel @Inject constructor(
         } else {
             viewModelScope.launch(Dispatchers.IO + handler) {
                 _state.value = State.Loading
-                delay(2000)
-                Log.i("BRED", "VM: token is $token")
-                repository.signIn(token)
+                keyValueStorage.login = repository.signIn(token).login
                 _state.value = State.Idle
                 _actions.emit(Action.RouteToMain)
             }
@@ -65,8 +69,5 @@ class AuthViewModel @Inject constructor(
         object RouteToMain : Action
     }
 
-    private fun isNotValid(token: String): Boolean {
-        return (token.contains(Regex("""[ЁёА-я]""")))
-    }
-
+    private fun isNotValid(token: String): Boolean = token.contains(Regex("""[ЁёА-я]"""))
 }

@@ -12,6 +12,7 @@
     <string name="refresh">Refresh</string>
     <string name="logout">Logout</string>
     <string name="error">Error</string>
+    <string name="error_description">"Error data / error code \n %s</string>
     <string name="ok">OK</string>
     <string name="logo">logo</string>
 

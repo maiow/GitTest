@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 const val AUTH_TOKEN = "auth_token"
 const val TOKEN_SHARED_NAME = "token_shared_pref"
-const val TOKEN_ENABLED_KEY = "token_enabled"
+const val LOGIN_KEY = "login"
 
 @Singleton
 class KeyValueStorage @Inject constructor(@ApplicationContext context: Context) {
@@ -20,14 +20,11 @@ class KeyValueStorage @Inject constructor(@ApplicationContext context: Context) 
 
     var authToken: String?
         get() = prefs.getString(AUTH_TOKEN, "")
-        set(token) {
-            editor.putString(AUTH_TOKEN, token).apply()
-            authTokenEnabled = true
-        }
+        set(token) = editor.putString(AUTH_TOKEN, token).apply()
 
-    var authTokenEnabled: Boolean
-        get() = prefs.getBoolean(TOKEN_ENABLED_KEY, false)
-        set(tokenEnabled) = editor.putBoolean(TOKEN_ENABLED_KEY, tokenEnabled).apply()
+    var login: String?
+        get() = prefs.getString(LOGIN_KEY, "")
+        set(login) = editor.putString(LOGIN_KEY, login).apply()
 
     private fun createEncryptedSharedPrefs(context: Context): SharedPreferences {
         val masterKey = MasterKey.Builder(context)

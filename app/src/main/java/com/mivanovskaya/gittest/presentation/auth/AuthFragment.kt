@@ -15,11 +15,7 @@ import com.mivanovskaya.gittest.R
 import com.mivanovskaya.gittest.databinding.FragmentAuthBinding
 import com.mivanovskaya.gittest.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
-/** в ТЗ AuthFragment: Fragment(). Не у кого было спросить, можно ли использовать base fragment,
- * но, помня о DRY, все же решила использовать */
 
 @AndroidEntryPoint
 class AuthFragment : BaseFragment<FragmentAuthBinding>() {
@@ -62,15 +58,14 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
     private fun observeActions() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.actions.collectLatest {
+                viewModel.actions.collect {
                     when (it) {
-                        AuthViewModel.Action.RouteToMain ->
-                            findNavController().navigate(
-                                R.id.action_authFragment_to_repositoriesListFragment
-                            )
+                        AuthViewModel.Action.RouteToMain -> findNavController()
+                            .navigate(R.id.action_authFragment_to_repositoriesListFragment)
 
-                        is AuthViewModel.Action.ShowError ->
-                            showAlertDialog(it.message, requireContext())
+                        is AuthViewModel.Action.ShowError ->{
+                            requireContext().hideKeyboard(requireView())
+                            showAlertDialog(it.message, requireContext())}
                     }
                 }
             }
@@ -111,8 +106,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
                     editText.backgroundTintList = setBackgroundAppColor(R.color.error)
                     editTextHint.setTextColor(setAppColor(R.color.error))
                     invalidTokenError.isVisible = true
-                    //после обработки ошибок удалить
-                    testText.text = state.reason
+//                    setViewsWithActivatedEditText()
                 }
             }
         }

@@ -13,6 +13,7 @@
     <string name="refresh">Обновить</string>
     <string name="logout">Выйти</string>
     <string name="error">Ошибка</string>
+    <string name="error_description">"Ошибка в данных / в коде \n %s</string>
     <string name="ok">ОК</string>
     <string name="logo">логотип</string>
 
