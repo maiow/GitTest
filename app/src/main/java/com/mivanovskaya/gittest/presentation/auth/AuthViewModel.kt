@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mivanovskaya.gittest.data.AppRepository
-import com.mivanovskaya.gittest.data.KeyValueStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -17,8 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repository: AppRepository,
-    private val keyValueStorage: KeyValueStorage
+    private val repository: AppRepository
 ) : ViewModel() {
 
     private val token: MutableLiveData<String> = MutableLiveData()
@@ -30,7 +28,7 @@ class AuthViewModel @Inject constructor(
     val actions = _actions.asSharedFlow()
 
     init {
-        token.value = keyValueStorage.authToken
+        token.value = repository.getToken()
         if (!token.value.isNullOrBlank()) {
             viewModelScope.launch {
                 _actions.emit(Action.RouteToMain)
@@ -40,8 +38,9 @@ class AuthViewModel @Inject constructor(
 
     private val handler = CoroutineExceptionHandler { _, e ->
         viewModelScope.launch {
-            _actions.emit(Action.ShowError("${e.message}"))}
-        keyValueStorage.authToken = null
+            _actions.emit(Action.ShowError("${e.message}"))
+        }
+        repository.resetToken()
         _state.value = State.InvalidInput(e.message.toString())
     }
 
@@ -51,7 +50,7 @@ class AuthViewModel @Inject constructor(
         } else {
             viewModelScope.launch(Dispatchers.IO + handler) {
                 _state.value = State.Loading
-                keyValueStorage.login = repository.signIn(token).login
+                repository.saveLogin(repository.signIn(token).login)
                 _state.value = State.Idle
                 _actions.emit(Action.RouteToMain)
             }

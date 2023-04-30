@@ -1,7 +1,9 @@
 package com.mivanovskaya.gittest.data
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -26,22 +28,27 @@ class KeyValueStorage @Inject constructor(@ApplicationContext context: Context) 
         get() = prefs.getString(LOGIN_KEY, "")
         set(login) = editor.putString(LOGIN_KEY, login).apply()
 
-    private fun createEncryptedSharedPrefs(context: Context): SharedPreferences {
-        val masterKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
+    private fun createSharedPrefs(context: Context): SharedPreferences {
 
-        return EncryptedSharedPreferences.create(
-            context,
-            TOKEN_SHARED_NAME,
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val masterKey = MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
+
+            EncryptedSharedPreferences.create(
+                context,
+                TOKEN_SHARED_NAME,
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        } else {
+            context.getSharedPreferences(TOKEN_SHARED_NAME, MODE_PRIVATE)
+        }
     }
 
     init {
-        prefs = createEncryptedSharedPrefs(context)
+        prefs = createSharedPrefs(context)
         editor = prefs.edit()
     }
 }

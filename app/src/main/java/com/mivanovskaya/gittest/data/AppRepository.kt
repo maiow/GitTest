@@ -23,4 +23,14 @@ class AppRepository @Inject constructor(
 
         return api.getUserInfo()
     }
+
+    fun getToken() = keyValueStorage.authToken
+
+    fun resetToken() {
+        keyValueStorage.authToken = null
+    }
+
+    fun saveLogin(login: String) {
+        keyValueStorage.login = login
+    }
 }
