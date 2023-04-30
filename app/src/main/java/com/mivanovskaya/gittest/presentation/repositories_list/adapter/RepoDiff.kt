@@ -1,7 +1,7 @@
 package com.mivanovskaya.gittest.presentation.repositories_list.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.mivanovskaya.gittest.data.model.Repo
+import com.mivanovskaya.gittest.domain.model.Repo
 
 class RepoDiff : DiffUtil.ItemCallback<Repo>() {
 

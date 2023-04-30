@@ -3,7 +3,7 @@ package com.mivanovskaya.gittest.presentation.repositories_list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mivanovskaya.gittest.data.AppRepository
-import com.mivanovskaya.gittest.data.model.Repo
+import com.mivanovskaya.gittest.domain.model.Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -20,11 +20,8 @@ class RepositoriesListViewModel @Inject constructor(
     private val _state = MutableStateFlow<State>(State.Loading)
     val state = _state.asStateFlow()
 
-    sealed interface State {
-        object Loading : State
-        data class Loaded(val repos: List<Repo>) : State
-        data class Error(val error: String) : State
-        object Empty : State
+    init {
+        getRepositories()
     }
 
     fun getRepositories() {
@@ -43,7 +40,10 @@ class RepositoriesListViewModel @Inject constructor(
         }
     }
 
-    init {
-        getRepositories()
+    sealed interface State {
+        object Loading : State
+        data class Loaded(val repos: List<Repo>) : State
+        data class Error(val error: String) : State
+        object Empty : State
     }
 }

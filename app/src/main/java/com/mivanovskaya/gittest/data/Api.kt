@@ -1,7 +1,7 @@
 package com.mivanovskaya.gittest.data
 
-import com.mivanovskaya.gittest.data.model.Repo
-import com.mivanovskaya.gittest.data.model.UserInfo
+import com.mivanovskaya.gittest.data.dto.RepoDto
+import com.mivanovskaya.gittest.data.dto.UserInfoDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -9,12 +9,12 @@ import retrofit2.http.Query
 interface Api {
 
     @GET("user")
-    suspend fun getUserInfo(): UserInfo
+    suspend fun getUserInfo(): UserInfoDto
 
     @GET("users/{user}/repos")
     suspend fun getRepositories(
         @Path("user") user: String,
-        @Query("per_page") limit: Int = 10,
-        @Query("page") page: Int = 1,
-    ): List<Repo>
+        @Query("per_page") limit: Int,
+        @Query("page") page: Int
+    ): List<RepoDto>
 }

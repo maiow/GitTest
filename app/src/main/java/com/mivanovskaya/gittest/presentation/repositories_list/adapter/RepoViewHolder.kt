@@ -3,13 +3,8 @@ package com.mivanovskaya.gittest.presentation.repositories_list.adapter
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.mivanovskaya.gittest.R
-import com.mivanovskaya.gittest.data.model.Repo
+import com.mivanovskaya.gittest.domain.model.Repo
 import com.mivanovskaya.gittest.databinding.RepositoriesViewHolderBinding
-
-const val JAVA = "Java"
-const val KOTLIN = "Kotlin"
-const val PYTHON = "Python"
-const val JAVA_SCRIPT = "JavaScript"
 
 class RepoViewHolder(private val binding: RepositoriesViewHolderBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -41,6 +36,12 @@ class RepoViewHolder(private val binding: RepositoriesViewHolderBinding) :
                     .getColor(repoCard.context,R.color.white_50_opacity))
             }
         }
+    }
+    companion object {
+        const val JAVA = "Java"
+        const val KOTLIN = "Kotlin"
+        const val PYTHON = "Python"
+        const val JAVA_SCRIPT = "JavaScript"
     }
 }
 
