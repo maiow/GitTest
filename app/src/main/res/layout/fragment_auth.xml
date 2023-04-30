@@ -39,7 +39,7 @@
             <EditText
                 android:id="@+id/edit_text"
                 android:layout_width="0dp"
-                android:layout_height="41dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="55dp"
                 android:autofillHints="text"
                 android:hint="@string/token"
@@ -65,7 +65,7 @@
 
             <Space
                 android:layout_width="wrap_content"
-                android:layout_height="65dp"
+                android:layout_height="64dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/invalid_token_error" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -75,7 +75,6 @@
         android:id="@+id/sign_button"
         style="@style/GreenButton"
         android:layout_width="0dp"
-        android:layout_height="36dp"
         android:text="@string/sign_in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

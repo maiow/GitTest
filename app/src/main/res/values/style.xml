@@ -18,7 +18,8 @@
         <item name="rippleColor">@null</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-        <item name="android:layout_marginBottom">17dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_height">36dp</item>
         <item name="cornerRadius">8dp</item>
         <item name="layout_constraintWidth_max">328dp</item>
     </style>
@@ -30,8 +31,18 @@
         <item name="android:paddingStart">12dp</item>
         <item name="android:paddingEnd">12dp</item>
         <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">7dp</item>
+        <item name="android:paddingBottom">8dp</item>
         <item name="android:textSize">16sp</item>
         <item name="android:inputType">textNoSuggestions</item>
+    </style>
+
+    <style name="MyThemeOverlay.Material.MaterialAlertDialog"
+        parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:background">@color/grey</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/secondary</item>
     </style>
 </resources>
