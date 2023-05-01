@@ -17,3 +17,6 @@ data class RepoDto(
 
 @Serializable
 data class LicenseDto(val name: String)
+
+@Serializable
+data class Readme(val download_url: String?)

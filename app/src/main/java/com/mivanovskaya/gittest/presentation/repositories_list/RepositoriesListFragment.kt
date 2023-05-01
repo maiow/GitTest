@@ -34,7 +34,6 @@ class RepositoriesListFragment : BaseFragment<FragmentRepositoriesListBinding>()
         setAdapter()
         observeState()
         setRetryButton()
-
     }
 
     private fun observeState() {
@@ -49,46 +48,37 @@ class RepositoriesListFragment : BaseFragment<FragmentRepositoriesListBinding>()
 
     private fun updateUi(state: RepositoriesListViewModel.State) {
         with(binding) {
-            progressBar.isVisible = (state == RepositoriesListViewModel.State.Loading)
+            commonProgress.progressBar.isVisible =
+                (state == RepositoriesListViewModel.State.Loading)
             emptyRepo.isVisible = (state == RepositoriesListViewModel.State.Empty)
+            commonError.connectionError.isVisible = (state is RepositoriesListViewModel.State.Error)
+            recycler.isVisible = (state is RepositoriesListViewModel.State.Loaded)
+            retryButton.isVisible = (state is RepositoriesListViewModel.State.Error) ||
+                    (state is RepositoriesListViewModel.State.Empty)
         }
+        setRetryButtonText(state)
+        submitDataToAdapter(state)
+    }
 
-        when (state) {
-            is RepositoriesListViewModel.State.Loaded -> {
-                with(binding) {
-                    recycler.isVisible = true
-                    retryButton.isVisible = false
-                }
-                adapter.submitList(state.repos)
-            }
+    private fun submitDataToAdapter(state: RepositoriesListViewModel.State) {
+        if (state is RepositoriesListViewModel.State.Loaded)
+            adapter.submitList(state.repos)
+        else adapter.submitList(emptyList())
+    }
 
-            is RepositoriesListViewModel.State.Error -> {
-                with(binding) {
-                    recycler.isVisible = false
-                    retryButton.isVisible = true
-                }
-            }
-
-            RepositoriesListViewModel.State.Empty -> {
-                with(binding.retryButton) {
-                    isVisible = true
-                    text = getString(R.string.refresh)
-                }
-
-            }
-
-            RepositoriesListViewModel.State.Loading -> {
-                with(binding) {
-                    recycler.isVisible = false
-                }
-            }
-        }
+    private fun setRetryButtonText(state: RepositoriesListViewModel.State) {
+        binding.retryButton.text =
+            if (state is RepositoriesListViewModel.State.Empty)
+                getString(R.string.refresh)
+            else getString(R.string.retry)
     }
 
     private fun onClick(item: Repo) {
-            findNavController().navigate(RepositoriesListFragmentDirections
-                .actionRepositoriesListFragmentToDetailInfoFragment(item.id.toString()))
-        }
+        findNavController().navigate(
+            RepositoriesListFragmentDirections
+                .actionRepositoriesListFragmentToDetailInfoFragment(item.name)
+        )
+    }
 
     private fun setAdapter() {
         binding.recycler.adapter = adapter
@@ -96,8 +86,7 @@ class RepositoriesListFragment : BaseFragment<FragmentRepositoriesListBinding>()
 
     private fun setRetryButton() {
         binding.retryButton.setOnClickListener {
-            viewModel.getRepositories()
-            binding.retryButton.text = getString(R.string.retry)
+            viewModel.onRetryButtonClick()
         }
     }
 }

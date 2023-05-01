@@ -9,6 +9,7 @@
     <color name="secondary">#58A6FF</color>
     <color name="grey">#21262D</color>
     <color name="error">#B00020</color>
+    <color name="connection_error">#CB4F4F</color>
     <color name="white_50_opacity">#80FFFFFF</color>
     <color name="yellow">#F4E264</color>
     <color name="lilac">#A37AEE</color>

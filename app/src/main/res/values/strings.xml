@@ -12,8 +12,25 @@
     <string name="refresh">Refresh</string>
     <string name="logout">Logout</string>
     <string name="error">Error</string>
-    <string name="error_description">"Error data / error code \n %s</string>
+    <string name="error_description">"Error data / error code \n information for developers \n %s</string>
     <string name="ok">OK</string>
     <string name="logo">logo</string>
-
+    <string name="license">License</string>
+    <string name="no_license">No license</string>
+    <plurals name="stars">
+        <item quantity="one">%1$d star</item>
+        <item quantity="other">%1$d stars</item>
+    </plurals>
+    <plurals name="forks">
+        <item quantity="one">%1$d fork</item>
+        <item quantity="other">%1$d forks</item>
+    </plurals>
+    <plurals name="watchers">
+        <item quantity="one">%1$d watcher</item>
+        <item quantity="other">%1$d watchers</item>
+    </plurals>
+    <string name="logout_title">Are you sure you want to logout?</string>
+    <string name="logout_message">All local data will be deleted.</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

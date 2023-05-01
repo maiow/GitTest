@@ -13,8 +13,31 @@
     <string name="refresh">Обновить</string>
     <string name="logout">Выйти</string>
     <string name="error">Ошибка</string>
-    <string name="error_description">"Ошибка в данных / в коде \n %s</string>
+    <string name="error_description">"Ошибка в данных / в коде \n информация для разработчиков \n %s</string>
     <string name="ok">ОК</string>
     <string name="logo">логотип</string>
-
+    <string name="license">Лицензия</string>
+    <string name="no_license">Лицензии нет</string>
+    <plurals name="stars">
+        <item quantity="one">%1$d звезда</item>
+        <item quantity="few">%1$d звезды</item>
+        <item quantity="many">%1$d звезд</item>
+        <item quantity="other">%1$d звезд</item>
+    </plurals>
+    <plurals name="forks">
+        <item quantity="one">%1$d форк</item>
+        <item quantity="few">%1$d форка</item>
+        <item quantity="many">%1$d форков</item>
+        <item quantity="other">%1$d форков</item>
+    </plurals>
+    <plurals name="watchers">
+        <item quantity="one">%1$d наблюдатель</item>
+        <item quantity="few">%1$d наблюдателя</item>
+        <item quantity="many">%1$d наблюдателей</item>
+        <item quantity="other">%1$d наблюдателей</item>
+    </plurals>
+    <string name="logout_title">Вы уверены, что хотите выйти?</string>
+    <string name="logout_message">Все локальные данные будут удалены.</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 </resources>

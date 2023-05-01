@@ -38,19 +38,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/repositories_view_holder" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/white"
-        android:indeterminateTintMode="src_in"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/top_appbar" />
-
     <LinearLayout
         android:id="@+id/empty_repo"
         android:layout_width="wrap_content"
@@ -84,6 +71,14 @@
             android:text="@string/no_repositories" />
 
     </LinearLayout>
+
+    <include
+        android:id="@+id/common_error"
+        layout="@layout/common_connection_error" />
+
+    <include
+        android:id="@+id/common_progress"
+        layout="@layout/common_progress_bar" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/retry_button"

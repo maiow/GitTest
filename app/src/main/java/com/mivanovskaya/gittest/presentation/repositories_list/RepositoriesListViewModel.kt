@@ -6,7 +6,6 @@ import com.mivanovskaya.gittest.data.AppRepository
 import com.mivanovskaya.gittest.domain.model.Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -24,11 +23,12 @@ class RepositoriesListViewModel @Inject constructor(
         getRepositories()
     }
 
-    fun getRepositories() {
+    fun onRetryButtonClick() = getRepositories()
+
+    private fun getRepositories() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _state.value = State.Loading
-                delay(2000)
                 val repos = repository.getRepositories()
                 if (repos.isEmpty())
                     _state.value = State.Empty

@@ -17,4 +17,10 @@ interface Api {
         @Query("per_page") limit: Int,
         @Query("page") page: Int
     ): List<RepoDto>
+
+    @GET("repos/{user}/{repoId}")
+    suspend fun getRepository(
+        @Path("user") user: String,
+        @Path("repoId") repoId: String
+    ): RepoDto
 }
