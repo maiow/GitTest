@@ -1,5 +1,7 @@
 package com.mivanovskaya.gittest.data
 
+import com.mivanovskaya.gittest.data.api.RepositoriesApi
+import com.mivanovskaya.gittest.data.api.UserContentApi
 import com.mivanovskaya.gittest.domain.model.Repo
 import com.mivanovskaya.gittest.domain.model.RepoDetails
 import com.mivanovskaya.gittest.domain.model.UserInfo
@@ -9,23 +11,28 @@ import com.mivanovskaya.gittest.domain.toUserInfo
 import javax.inject.Inject
 
 class AppRepository @Inject constructor(
-    private val api: Api,
+    private val repositoriesApi: RepositoriesApi,
+    private val userApi: UserContentApi,
     private val keyValueStorage: KeyValueStorage
 ) {
     suspend fun getRepositories(): List<Repo> =
-        api.getRepositories(keyValueStorage.login ?: "", REPOS_QUANTITY, PAGES).toListRepo()
+        repositoriesApi.getRepositories(keyValueStorage.login ?: "", REPOS_QUANTITY, PAGES)
+            .toListRepo()
 
     suspend fun getRepository(repoId: String): RepoDetails =
-        api.getRepository(keyValueStorage.login ?: "", repoId).toRepoDetails()
+        repositoriesApi.getRepository(keyValueStorage.login ?: "", repoId).toRepoDetails()
 
-    //    suspend fun getRepositoryReadme(ownerName: String, repositoryName: String, branchName: String): String {
-//        // TODO:
-//    }
-//
+    suspend fun getRepositoryReadme(
+        ownerName: String,
+        repositoryName: String,
+        branchName: String
+    ): String =
+        userApi.getRepositoryReadme(ownerName, repositoryName, branchName)
+
+
     suspend fun signIn(token: String): UserInfo {
         keyValueStorage.authToken = token
-
-        return api.getUserInfo().toUserInfo()
+        return repositoriesApi.getUserInfo().toUserInfo()
     }
 
     fun getToken() = keyValueStorage.authToken

@@ -16,9 +16,9 @@ data class RepoDetails(
     val license: License?,
     val name: String,
     val stargazers_count: Int,
-    val watchers_count: Int
+    val watchers_count: Int,
+    val login: String,
+    val default_branch: String
 )
 
 class License(val name: String)
-
-class Readme(val download_url: String?)

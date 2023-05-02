@@ -12,11 +12,15 @@ data class RepoDto(
     val license: LicenseDto?,
     val name: String,
     val stargazers_count: Int,
-    val watchers_count: Int
+    val watchers_count: Int,
+    val owner: OwnerDto,
+    val default_branch: String
 )
 
 @Serializable
 data class LicenseDto(val name: String)
 
 @Serializable
-data class Readme(val download_url: String?)
+data class OwnerDto(
+    val login: String
+)

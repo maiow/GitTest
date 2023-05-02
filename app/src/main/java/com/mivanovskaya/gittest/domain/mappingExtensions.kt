@@ -17,7 +17,7 @@ fun List<RepoDto>.toListRepo(): List<Repo> =
 
 fun RepoDto.toRepoDetails() = RepoDetails(
     description, forks_count, html_url, id, language, license?.toLicense(), name, stargazers_count,
-    watchers_count
+    watchers_count, owner.login, default_branch
 )
 
 fun LicenseDto.toLicense() = License(name)

@@ -1,4 +1,4 @@
-package com.mivanovskaya.gittest.data
+package com.mivanovskaya.gittest.data.api
 
 import com.mivanovskaya.gittest.data.dto.RepoDto
 import com.mivanovskaya.gittest.data.dto.UserInfoDto
@@ -6,7 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface Api {
+interface RepositoriesApi {
 
     @GET("user")
     suspend fun getUserInfo(): UserInfoDto

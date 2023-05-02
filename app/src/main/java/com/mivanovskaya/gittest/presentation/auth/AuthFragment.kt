@@ -8,9 +8,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.mivanovskaya.gittest.R
 import com.mivanovskaya.gittest.databinding.FragmentAuthBinding
@@ -36,10 +34,8 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
 
     private fun observeState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect { state ->
-                    updateUiOnState(state)
-                }
+            viewModel.state.collect { state ->
+                updateUiOnState(state)
             }
         }
     }

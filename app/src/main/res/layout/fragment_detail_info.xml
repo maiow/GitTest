@@ -201,12 +201,15 @@
             tools:text="@tools:sample/lorem/random" />
     </androidx.core.widget.NestedScrollView>
 
-    <include
+    <ProgressBar
         android:id="@+id/readme_progress"
-        layout="@layout/common_progress_bar"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="24dp"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/white"
+        android:indeterminateTintMode="src_in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/icon_star" />

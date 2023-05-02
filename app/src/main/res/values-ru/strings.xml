@@ -40,4 +40,5 @@
     <string name="logout_message">Все локальные данные будут удалены.</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="no_readme">Нет Readme файла</string>
 </resources>

@@ -1,8 +1,8 @@
 package com.mivanovskaya.gittest.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.mivanovskaya.gittest.data.Api
 import com.mivanovskaya.gittest.data.KeyValueStorage
+import com.mivanovskaya.gittest.data.api.RepositoriesApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +15,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ApiModule {
+class RepositoriesApiModule {
 
     @Provides
     @Singleton
@@ -34,7 +34,7 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
+    fun provideRetrofitForRepositoriesApi(okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .baseUrl("https://api.github.com/")
             .addConverterFactory(Json {
@@ -45,5 +45,6 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideApi(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
+    fun provideRepositoriesApi(retrofit: Retrofit): RepositoriesApi =
+        retrofit.create(RepositoriesApi::class.java)
 }

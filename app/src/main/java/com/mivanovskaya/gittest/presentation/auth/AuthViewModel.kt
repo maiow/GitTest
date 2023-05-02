@@ -66,7 +66,7 @@ class AuthViewModel @Inject constructor(
     sealed interface State {
         object Idle : State
         object Loading : State
-        /** reason не String, а StringValue, чтобы ViewModel не зависел от context*/
+        /** reason не String как в ТЗ, а StringValue, чтобы ViewModel не зависел от context*/
         data class InvalidInput(val reason: StringValue) : State
     }
 

@@ -33,4 +33,5 @@
     <string name="logout_message">All local data will be deleted.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="no_readme">No Readme file</string>
 </resources>

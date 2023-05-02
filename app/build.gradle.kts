@@ -18,7 +18,6 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -41,12 +40,6 @@ android {
 
 dependencies {
 
-    //implementation 'androidx.room:room-runtime:2.5.1'
-    //annotationProcessor 'androidx.room:room-compiler:2.5.1'
-
-    // To use Kotlin annotation processing tool (kapt)
-    //kapt 'androidx.room:room-compiler:2.5.1'
-
     implementation("androidx.core:core-ktx:1.10.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
@@ -63,18 +56,13 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.0")
 
-    //Hilt
     implementation("com.google.dagger:hilt-android:2.45")
-   // implementation("androidx.legacy:legacy-support-v4:1.0.0")
     kapt("com.google.dagger:hilt-android-compiler:2.45")
 
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
-    implementation("androidx.recyclerview:recyclerview:1.3.0")
-    //implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
-    //implementation 'androidx.paging:paging-runtime:3.1.1'
 
-    //testImplementation 'junit:junit:4.13.2'
-    //androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    //androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    implementation("org.jetbrains:markdown:0.4.1")
 }
