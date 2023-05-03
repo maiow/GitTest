@@ -12,9 +12,7 @@ class RepoViewHolder(private val binding: RepositoriesViewHolderBinding) :
     fun bind(item: Repo, onClick: (item: Repo) -> Unit) {
 
         with(binding) {
-            repoCard.setOnClickListener {
-                onClick(item)
-            }
+            repoCard.setOnClickListener { onClick(item) }
 
             title.text = item.name
             description.text = item.description

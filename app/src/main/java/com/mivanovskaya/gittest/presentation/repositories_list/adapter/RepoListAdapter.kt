@@ -7,14 +7,12 @@ import com.mivanovskaya.gittest.domain.model.Repo
 import com.mivanovskaya.gittest.databinding.RepositoriesViewHolderBinding
 
 class RepoListAdapter(
-    private val onClick: (Repo) -> Unit
-) : ListAdapter<Repo, RepoViewHolder>(RepoDiff()) {
+    private val onItemClick: (Repo) -> Unit
+) : ListAdapter<Repo, RepoViewHolder>(RepoDiffUtil()) {
 
     override fun onBindViewHolder(holder: RepoViewHolder, position: Int) {
         getItem(position)?.let { item ->
-            holder.bind(item) { Repo ->
-                onClick(Repo)
-            }
+            holder.bind(item) { Repo -> onItemClick(Repo) }
         }
     }
 

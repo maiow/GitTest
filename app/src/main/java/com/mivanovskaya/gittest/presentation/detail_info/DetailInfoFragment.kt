@@ -76,8 +76,12 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
             commonError.connectionError.isVisible =
                 ((state is State.Error) && (state.error == NO_INTERNET))
             retryButton.isVisible = commonError.connectionError.isVisible
-            error.somethingError.isVisible =
-                ((state is State.Error) && (state.error != NO_INTERNET))
+
+            if ((state is State.Error) && (state.error != NO_INTERNET)) {
+                error.somethingError.isVisible = true
+                error.errorDescription.text =
+                    getString(R.string.error_with_description, state.error)
+            }
 
             if (state is State.Loaded) {
                 setRepoInfoVisible(true)

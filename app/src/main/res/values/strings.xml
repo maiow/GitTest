@@ -14,6 +14,9 @@
     <string name="error">Error</string>
     <string name="error_description">"Error data / error code \n information for developers \n %s</string>
     <string name="ok">OK</string>
+    <string name="error_with_description">Error %1$s</string>
+    <string name="something_error">Something error</string>
+    <string name="check_your_something">Check server or your application code</string>
     <string name="logo">logo</string>
     <string name="license">License</string>
     <string name="no_license">No license</string>
@@ -34,6 +37,5 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="no_readme">No README.md</string>
-    <string name="something_error">Something error</string>
-    <string name="check_your_something">Check your something</string>
+
 </resources>

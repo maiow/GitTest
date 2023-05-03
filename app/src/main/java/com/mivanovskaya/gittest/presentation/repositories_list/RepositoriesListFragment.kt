@@ -12,6 +12,8 @@ import com.mivanovskaya.gittest.R
 import com.mivanovskaya.gittest.databinding.FragmentRepositoriesListBinding
 import com.mivanovskaya.gittest.domain.model.Repo
 import com.mivanovskaya.gittest.presentation.base.BaseFragment
+import com.mivanovskaya.gittest.presentation.repositories_list.RepositoriesListViewModel.Companion.NO_INTERNET
+import com.mivanovskaya.gittest.presentation.repositories_list.RepositoriesListViewModel.State
 import com.mivanovskaya.gittest.presentation.repositories_list.adapter.RepoListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -24,7 +26,7 @@ class RepositoriesListFragment : BaseFragment<FragmentRepositoriesListBinding>()
         FragmentRepositoriesListBinding.inflate(inflater)
 
     private val adapter by lazy {
-        RepoListAdapter { item -> onClick(item) }
+        RepoListAdapter { item -> onItemClick(item) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,34 +50,41 @@ class RepositoriesListFragment : BaseFragment<FragmentRepositoriesListBinding>()
         }
     }
 
-    private fun updateUi(state: RepositoriesListViewModel.State) {
+    private fun updateUi(state: State) {
         with(binding) {
-            commonProgress.progressBar.isVisible =
-                (state == RepositoriesListViewModel.State.Loading)
-            emptyRepo.isVisible = (state == RepositoriesListViewModel.State.Empty)
-            commonError.connectionError.isVisible = (state is RepositoriesListViewModel.State.Error)
-            recycler.isVisible = (state is RepositoriesListViewModel.State.Loaded)
-            retryButton.isVisible = (state is RepositoriesListViewModel.State.Error) ||
-                    (state is RepositoriesListViewModel.State.Empty)
+            commonProgress.progressBar.isVisible = (state == State.Loading)
+            emptyRepo.isVisible = (state == State.Empty)
+
+            commonConnectError.connectionError.isVisible =
+                ((state is State.Error) && (state.error == NO_INTERNET))
+
+            if ((state is State.Error) && (state.error != NO_INTERNET)) {
+                commonOtherError.somethingError.isVisible = true
+                commonOtherError.errorDescription.text =
+                    getString(R.string.error_with_description, state.error)
+            }
+
+            recycler.isVisible = (state is State.Loaded)
+            retryButton.isVisible = (state is State.Error) || (state is State.Empty)
         }
         setRetryButtonText(state)
         submitDataToAdapter(state)
     }
 
-    private fun submitDataToAdapter(state: RepositoriesListViewModel.State) {
-        if (state is RepositoriesListViewModel.State.Loaded)
+    private fun submitDataToAdapter(state: State) {
+        if (state is State.Loaded)
             adapter.submitList(state.repos)
         else adapter.submitList(emptyList())
     }
 
-    private fun setRetryButtonText(state: RepositoriesListViewModel.State) {
+    private fun setRetryButtonText(state: State) {
         binding.retryButton.text =
-            if (state is RepositoriesListViewModel.State.Empty)
+            if (state is State.Empty)
                 getString(R.string.refresh)
             else getString(R.string.retry)
     }
 
-    private fun onClick(item: Repo) {
+    private fun onItemClick(item: Repo) {
         findNavController().navigate(
             RepositoriesListFragmentDirections
                 .actionRepositoriesListFragmentToDetailInfoFragment(item.name)

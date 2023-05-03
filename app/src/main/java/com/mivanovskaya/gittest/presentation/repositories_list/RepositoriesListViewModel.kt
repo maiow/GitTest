@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,16 +37,26 @@ class RepositoriesListViewModel @Inject constructor(
                     _state.value = State.Empty
                 else
                     _state.value = State.Loaded(repos)
+            } catch (e: IOException) {
+                handleNetworkException()
             } catch (e: Exception) {
                 _state.value = State.Error(e.message.toString())
             }
         }
     }
 
+    private fun handleNetworkException() {
+            _state.value = State.Error(NO_INTERNET)
+        }
+
     sealed interface State {
         object Loading : State
         data class Loaded(val repos: List<Repo>) : State
         data class Error(val error: String) : State
         object Empty : State
+    }
+
+    companion object {
+        const val NO_INTERNET = "NO_INTERNET"
     }
 }

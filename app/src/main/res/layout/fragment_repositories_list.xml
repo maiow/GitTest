@@ -54,6 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:importantForAccessibility="no"
             android:src="@drawable/ic_empty" />
 
         <TextView
@@ -73,8 +74,13 @@
     </LinearLayout>
 
     <include
-        android:id="@+id/common_error"
+        android:id="@+id/common_connect_error"
         layout="@layout/common_connection_error" />
+
+    <include
+        android:id="@+id/common_other_error"
+        layout="@layout/common_something_error"
+        android:visibility="gone" />
 
     <include
         android:id="@+id/common_progress"

@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/standard_margin"
         android:layout_marginTop="24dp"
+        android:importantForAccessibility="no"
         android:src="@drawable/ic_link"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_appbar" />
@@ -55,6 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/standard_margin"
         android:layout_marginTop="24dp"
+        android:importantForAccessibility="no"
         android:src="@drawable/ic_license"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/link" />
@@ -94,6 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/standard_margin"
         android:layout_marginTop="24dp"
+        android:importantForAccessibility="no"
         android:src="@drawable/ic_star"
         app:layout_constraintEnd_toStartOf="@+id/stars"
         app:layout_constraintStart_toStartOf="parent"
@@ -113,6 +116,9 @@
         app:layout_constraintTop_toTopOf="@id/icon_star"
         tools:text="1010 stars" />
 
+    <!-- гайдлайны добавлены для того, чтобы на foldable, tablets и desktop
+    вьюшки не расползались по широкому экрану -->
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_forks"
         android:layout_width="wrap_content"
@@ -125,6 +131,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/micro_margin"
+        android:importantForAccessibility="no"
         android:src="@drawable/ic_fork"
         app:layout_constraintBottom_toBottomOf="@id/icon_star"
         app:layout_constraintEnd_toStartOf="@+id/forks"
@@ -157,6 +164,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/micro_margin"
+        android:importantForAccessibility="no"
         android:src="@drawable/ic_watcher"
         app:layout_constraintBottom_toBottomOf="@id/icon_star"
         app:layout_constraintEnd_toStartOf="@+id/watchers"
