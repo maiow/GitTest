@@ -17,7 +17,7 @@
     <string name="ok">ОК</string>
     <string name="error_with_description">Ошибка %1$s</string>
     <string name="something_error">Какая-то ошибка</string>
-    <string name="check_your_something">Проверьте работу сервера или код приложения</string>
+    <string name="check_your_something">Возможно, сбой в работе сервера или необходимо обновить версию приложения</string>
     <string name="logo">логотип</string>
     <string name="license">Лицензия</string>
     <string name="no_license">Лицензии нет</string>
