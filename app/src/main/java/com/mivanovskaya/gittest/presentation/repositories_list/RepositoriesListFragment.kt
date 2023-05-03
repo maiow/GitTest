@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mivanovskaya.gittest.R
 import com.mivanovskaya.gittest.databinding.FragmentRepositoriesListBinding
 import com.mivanovskaya.gittest.domain.model.Repo
@@ -32,6 +33,11 @@ class RepositoriesListFragment : BaseFragment<FragmentRepositoriesListBinding>()
         setAdapter()
         observeState()
         setRetryButton()
+        setLogoutButton()
+    }
+
+    private fun setAdapter() {
+        binding.recycler.adapter = adapter
     }
 
     private fun observeState() {
@@ -76,13 +82,40 @@ class RepositoriesListFragment : BaseFragment<FragmentRepositoriesListBinding>()
         )
     }
 
-    private fun setAdapter() {
-        binding.recycler.adapter = adapter
-    }
-
     private fun setRetryButton() {
         binding.retryButton.setOnClickListener {
             viewModel.onRetryButtonClick()
         }
+    }
+
+    private fun setLogoutButton() {
+        val button = binding.repositoriesBar.menu.getItem(0)
+        button.setOnMenuItemClickListener {
+            setLogoutAlertDialog()
+            true
+        }
+    }
+
+    private fun setLogoutAlertDialog() {
+        val dialog = MaterialAlertDialogBuilder(
+            requireContext(),
+            R.style.MyThemeOverlay_Material_MaterialAlertDialog
+        )
+        dialog.setTitle(R.string.logout_title)
+            .setMessage(R.string.logout_message)
+            .setPositiveButton(R.string.yes) { _, _ ->
+                viewModel.onLogoutButtonPressed()
+                navigateToAuth()
+            }
+            .setNegativeButton(R.string.no) { _, _ ->
+                dialog.create().hide()
+            }
+        dialog.create().show()
+    }
+
+    private fun navigateToAuth() {
+        findNavController().navigate(
+            RepositoriesListFragmentDirections.actionRepositoriesListFragmentToAuthFragment()
+        )
     }
 }

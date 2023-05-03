@@ -2,9 +2,7 @@ package com.mivanovskaya.gittest.data.api
 
 import retrofit2.http.GET
 import retrofit2.http.Path
-import javax.inject.Singleton
 
-@Singleton
 interface UserContentApi {
     @GET("{ownerName}/{repositoryName}/{branchName}/README.md")
     suspend fun getRepositoryReadme(

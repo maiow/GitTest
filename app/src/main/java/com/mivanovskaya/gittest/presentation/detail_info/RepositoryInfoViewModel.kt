@@ -7,11 +7,11 @@ import com.mivanovskaya.gittest.data.AppRepository
 import com.mivanovskaya.gittest.domain.model.RepoDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,42 +25,66 @@ class RepositoryInfoViewModel @Inject constructor(
     private val _readmeState = MutableStateFlow<ReadmeState>(ReadmeState.Loading)
     val readmeState = _readmeState.asStateFlow()
 
-//    init {
-//        getRepoInfo()
-//    }
-
     fun onGettingArgument(repoId: String) = getRepoInfo(repoId)
 
     fun onLogoutButtonPressed() = repository.logout()
+
+    fun onRetryButtonClick(repoId: String) = getRepoInfo(repoId)
 
     private fun getRepoInfo(repoId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _state.value = State.Loading
                 val repo = repository.getRepository(repoId)
-                Log.i("BRED", "VM sent request to api on Repo Details")
                 _state.value = State.Loaded(repo, ReadmeState.Loading)
-                delay(2000)
-                Log.i("BRED", "VM branch: ${repo.default_branch}")
-                val readme = repository.getRepositoryReadme(
-                    ownerName = repo.login,
-                    repositoryName = repoId,
-                    branchName = repo.default_branch
-                )
-                Log.i("BRED", "VM sent request to api on Repo Readme, which is $readme")
-                if (readme.isBlank())
-                    _readmeState.value = ReadmeState.Empty
-                else _readmeState.value = ReadmeState.Loaded(readme)
+                getReadme(repo, repoId)
+
+            } catch (e: HttpException) {
+                handleHttpException(e)
+            } catch (e: IOException) {
+                handleNetworkException()
             } catch (e: Exception) {
-                if ((e is HttpException)) {
-                    _readmeState.value = ReadmeState.Empty
-                    Log.i("BRED1", e.message.toString())
-                } else {
-                    _state.value = State.Error(e.message.toString())
-                    Log.i("BRED2", e.message.toString())
-                    _readmeState.value = ReadmeState.Error(e.message.toString())
-                }
+                handleOtherException(e)
             }
+        }
+    }
+
+    private suspend fun getReadme(repo: RepoDetails, repoId: String) {
+        val readme = repository.getRepositoryReadme(
+            ownerName = repo.login,
+            repositoryName = repoId,
+            branchName = repo.default_branch
+        )
+        if (readme.isBlank()) _readmeState.value = ReadmeState.Empty
+        else _readmeState.value = ReadmeState.Loaded(readme)
+    }
+
+    private fun handleHttpException(e: HttpException) {
+        if (_state.value is State.Loading) {
+            _state.value = State.Error(e.message.toString())
+            _readmeState.value = ReadmeState.Error(e.message.toString())
+        } else {
+            if (e.code() == 404) _readmeState.value = ReadmeState.Empty
+            else _readmeState.value = ReadmeState.Error(e.message.toString())
+        }
+    }
+
+    private fun handleNetworkException() {
+        if (_state.value is State.Loaded)
+            _readmeState.value = ReadmeState.Error(NO_INTERNET)
+        else {
+            _state.value = State.Error(NO_INTERNET)
+            _readmeState.value = ReadmeState.Error(NO_INTERNET)
+        }
+    }
+
+    private fun handleOtherException(e: Exception) {
+        if (_state.value is State.Loaded)
+            _readmeState.value = ReadmeState.Error(e.message.toString())
+        else {
+            _state.value = State.Error(e.message.toString())
+            _readmeState.value = ReadmeState.Error(e.message.toString())
+            Log.i("BRED", e.message.toString())
         }
     }
 
@@ -79,5 +103,9 @@ class RepositoryInfoViewModel @Inject constructor(
         object Empty : ReadmeState
         data class Error(val error: String) : ReadmeState
         data class Loaded(val markdown: String) : ReadmeState
+    }
+
+    companion object {
+        const val NO_INTERNET = "NO_INTERNET"
     }
 }

@@ -36,8 +36,7 @@
         <item name="android:inputType">textNoSuggestions</item>
     </style>
 
-    <style name="MyThemeOverlay.Material.MaterialAlertDialog"
-        parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+    <style name="MyThemeOverlay.Material.MaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="android:background">@color/grey</item>
         <item name="buttonBarPositiveButtonStyle">@style/DialogButtonStyle</item>
         <item name="buttonBarNegativeButtonStyle">@style/DialogButtonStyle</item>

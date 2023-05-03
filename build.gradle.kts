@@ -8,7 +8,7 @@ plugins {
     kotlin("plugin.serialization") version "1.8.10" apply false
 }
 
-tasks.register<Delete>("clean"){
+tasks.register<Delete>("clean") {
     delete(rootProject.buildDir)
 }
 

@@ -25,6 +25,8 @@ class RepositoriesListViewModel @Inject constructor(
 
     fun onRetryButtonClick() = getRepositories()
 
+    fun onLogoutButtonPressed() = repository.logout()
+
     private fun getRepositories() {
         viewModelScope.launch(Dispatchers.IO) {
             try {

@@ -19,7 +19,9 @@ class RepoListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = RepoViewHolder(
-        RepositoriesViewHolderBinding.inflate(LayoutInflater.from(parent.context),
-            parent, false)
+        RepositoriesViewHolderBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent, false
+        )
     )
 }

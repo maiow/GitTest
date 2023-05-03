@@ -21,6 +21,4 @@ data class RepoDto(
 data class LicenseDto(val name: String)
 
 @Serializable
-data class OwnerDto(
-    val login: String
-)
+data class OwnerDto(val login: String)

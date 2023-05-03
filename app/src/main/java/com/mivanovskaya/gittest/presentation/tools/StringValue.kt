@@ -19,6 +19,7 @@ sealed class StringValue {
             is StringResource -> context?.getString(resId, *args).orEmpty()
         }
     }
+
     companion object {
         const val EMPTY = ""
     }

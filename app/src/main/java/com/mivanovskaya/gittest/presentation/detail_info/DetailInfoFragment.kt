@@ -1,6 +1,7 @@
 package com.mivanovskaya.gittest.presentation.detail_info
 
 import android.os.Bundle
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.text.HtmlCompat
@@ -13,6 +14,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mivanovskaya.gittest.R
 import com.mivanovskaya.gittest.databinding.FragmentDetailInfoBinding
 import com.mivanovskaya.gittest.presentation.base.BaseFragment
+import com.mivanovskaya.gittest.presentation.detail_info.RepositoryInfoViewModel.Companion.NO_INTERNET
 import com.mivanovskaya.gittest.presentation.detail_info.RepositoryInfoViewModel.ReadmeState
 import com.mivanovskaya.gittest.presentation.detail_info.RepositoryInfoViewModel.State
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,9 +35,10 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
 
         onGettingArgument()
         setToolbarTitle()
-        observeState()
+        observeDetailInfoState()
         observeReadmeState()
         setAppBarBackArrowClick()
+        setRetryButton()
         setLogoutButton()
     }
 
@@ -51,10 +54,10 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
         }
     }
 
-    private fun observeState() {
+    private fun observeDetailInfoState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.state.collect { state ->
-                updateUi(state)
+                updateUiOnDetailInfo(state)
             }
         }
     }
@@ -62,15 +65,19 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
     private fun observeReadmeState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.readmeState.collect { state ->
-                updateUiOnReadmeState(state)
+                updateUiOnReadme(state)
             }
         }
     }
 
-    private fun updateUi(state: State) {
+    private fun updateUiOnDetailInfo(state: State) {
         with(binding) {
             commonProgress.progressBar.isVisible = (state == State.Loading)
-            commonError.connectionError.isVisible = (state is State.Error)
+            commonError.connectionError.isVisible =
+                ((state is State.Error) && (state.error == NO_INTERNET))
+            retryButton.isVisible = commonError.connectionError.isVisible
+            error.somethingError.isVisible =
+                ((state is State.Error) && (state.error != NO_INTERNET))
 
             if (state is State.Loaded) {
                 setRepoInfoVisible(true)
@@ -101,27 +108,33 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
         }
     }
 
-    private fun updateUiOnReadmeState(state: ReadmeState) {
-        binding.readmeProgress.isVisible = state is ReadmeState.Loading
-        binding.readme.isVisible = (state is ReadmeState.Loaded) || (state is ReadmeState.Empty)
+    private fun updateUiOnReadme(state: ReadmeState) {
+        with(binding) {
+            readmeProgress.isVisible = state is ReadmeState.Loading
+            readme.isVisible = (state is ReadmeState.Loaded) || (state is ReadmeState.Empty)
 
-        binding.commonError.connectionError.isVisible = (state is ReadmeState.Error)
-        binding.commonError.connectionErrorImage.isVisible = (state is ReadmeState.Error)
+            readmeError.connectionError.isVisible =
+                ((state is ReadmeState.Error) && (state.error == NO_INTERNET))
 
-        binding.readme.text = when (state) {
-            is ReadmeState.Loaded -> {
-                val markdown = state.markdown
-                val flavour = CommonMarkFlavourDescriptor()
-                val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(markdown)
-                val html = HtmlGenerator(markdown, parsedTree, flavour).generateHtml()
-                HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
+            if ((state is ReadmeState.Error) && (state.error != NO_INTERNET)) {
+                error.somethingError.isVisible = true
+                error.errorDescription.text = state.error
             }
+            retryButton.isVisible = (state is ReadmeState.Error)
 
-            is ReadmeState.Empty -> getString(R.string.no_readme)
-            else -> null
+            readme.text = when (state) {
+                is ReadmeState.Loaded -> parseReadmeMarkdown(state.markdown)
+                is ReadmeState.Empty -> getString(R.string.no_readme)
+                else -> null
+            }
         }
-        //binding.commonError. = state.message
+    }
 
+    private fun parseReadmeMarkdown(markdown: String): Spanned {
+        val flavour = CommonMarkFlavourDescriptor()
+        val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(markdown)
+        val html = HtmlGenerator(markdown, parsedTree, flavour).generateHtml()
+        return HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
     }
 
     private fun setRepoInfoVisible(set: Boolean) {
@@ -137,6 +150,12 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
             iconFork.isVisible = set
             iconWatcher.isVisible = set
             iconLink.isVisible = set
+        }
+    }
+
+    private fun setRetryButton() {
+        binding.retryButton.setOnClickListener {
+            viewModel.onRetryButtonClick(args.repoId)
         }
     }
 

@@ -31,14 +31,16 @@
         <item quantity="other">%1$d форков</item>
     </plurals>
     <plurals name="watchers">
-        <item quantity="one">%1$d наблюдатель</item>
-        <item quantity="few">%1$d наблюдателя</item>
-        <item quantity="many">%1$d наблюдателей</item>
-        <item quantity="other">%1$d наблюдателей</item>
+        <item quantity="one">%1$d вотчер</item>
+        <item quantity="few">%1$d вотчера</item>
+        <item quantity="many">%1$d вотчеров</item>
+        <item quantity="other">%1$d вотчеров</item>
     </plurals>
     <string name="logout_title">Вы уверены, что хотите выйти?</string>
     <string name="logout_message">Все локальные данные будут удалены.</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
-    <string name="no_readme">Нет Readme файла</string>
+    <string name="no_readme">Нет README.md</string>
+    <string name="something_error">Ошибка</string>
+    <string name="check_your_something">Проверьте что-то</string>
 </resources>
