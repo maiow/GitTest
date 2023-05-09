@@ -1,6 +1,5 @@
 package com.mivanovskaya.gittest.presentation.detail_info
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mivanovskaya.gittest.data.AppRepository
@@ -84,7 +83,6 @@ class RepositoryInfoViewModel @Inject constructor(
         else {
             _state.value = State.Error(e.message.toString())
             _readmeState.value = ReadmeState.Error(e.message.toString())
-            Log.i("BRED", e.message.toString())
         }
     }
 
