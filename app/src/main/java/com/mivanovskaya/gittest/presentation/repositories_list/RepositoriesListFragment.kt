@@ -22,12 +22,12 @@ import kotlinx.coroutines.launch
 class RepositoriesListFragment : BaseFragment<FragmentRepositoriesListBinding>() {
 
     private val viewModel by viewModels<RepositoriesListViewModel>()
-    override fun initBinding(inflater: LayoutInflater) =
-        FragmentRepositoriesListBinding.inflate(inflater)
-
     private val adapter by lazy {
         RepoListAdapter { item -> onItemClick(item) }
     }
+
+    override fun initBinding(inflater: LayoutInflater) =
+        FragmentRepositoriesListBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

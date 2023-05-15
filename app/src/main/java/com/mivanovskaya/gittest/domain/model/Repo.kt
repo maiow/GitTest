@@ -9,16 +9,16 @@ data class Repo(
 
 data class RepoDetails(
     val description: String?,
-    val forks_count: Int,
-    val html_url: String,
+    val forksCount: Int,
+    val htmlUrl: String,
     val id: Int,
     val language: String?,
     val license: License?,
     val name: String,
-    val stargazers_count: Int,
-    val watchers_count: Int,
+    val stargazersCount: Int,
+    val watchersCount: Int,
     val login: String,
-    val default_branch: String
+    val defaultBranch: String
 )
 
 class License(val name: String)

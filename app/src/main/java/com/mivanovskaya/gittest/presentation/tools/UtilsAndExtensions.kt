@@ -1,4 +1,4 @@
-package com.mivanovskaya.gittest.presentation.auth
+package com.mivanovskaya.gittest.presentation.tools
 
 import android.content.Context
 import android.content.res.ColorStateList

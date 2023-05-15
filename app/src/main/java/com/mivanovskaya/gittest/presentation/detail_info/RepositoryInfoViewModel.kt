@@ -52,7 +52,7 @@ class RepositoryInfoViewModel @Inject constructor(
         val readme = repository.getRepositoryReadme(
             ownerName = repo.login,
             repositoryName = repoId,
-            branchName = repo.default_branch
+            branchName = repo.defaultBranch
         )
         if (readme.isBlank()) _readmeState.value = ReadmeState.Empty
         else _readmeState.value = ReadmeState.Loaded(readme)

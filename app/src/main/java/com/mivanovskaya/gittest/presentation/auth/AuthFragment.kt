@@ -13,14 +13,18 @@ import androidx.navigation.fragment.findNavController
 import com.mivanovskaya.gittest.R
 import com.mivanovskaya.gittest.databinding.FragmentAuthBinding
 import com.mivanovskaya.gittest.presentation.base.BaseFragment
+import com.mivanovskaya.gittest.presentation.tools.hideKeyboard
+import com.mivanovskaya.gittest.presentation.tools.setAppColor
+import com.mivanovskaya.gittest.presentation.tools.setBackgroundAppColor
+import com.mivanovskaya.gittest.presentation.tools.showAlertDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AuthFragment : BaseFragment<FragmentAuthBinding>() {
 
-    override fun initBinding(inflater: LayoutInflater) = FragmentAuthBinding.inflate(inflater)
     private val viewModel by viewModels<AuthViewModel>()
+    override fun initBinding(inflater: LayoutInflater) = FragmentAuthBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

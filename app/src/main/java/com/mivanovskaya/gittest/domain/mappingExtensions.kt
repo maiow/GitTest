@@ -16,8 +16,17 @@ fun List<RepoDto>.toListRepo(): List<Repo> =
     this.map { item -> item.toRepo() }
 
 fun RepoDto.toRepoDetails() = RepoDetails(
-    description, forks_count, html_url, id, language, license?.toLicense(), name, stargazers_count,
-    watchers_count, owner.login, default_branch
+    description = description,
+    forksCount = forksCount,
+    htmlUrl = htmlUrl,
+    id = id,
+    language = language,
+    license = license?.toLicense(),
+    name = name,
+    stargazersCount = stargazersCount,
+    watchersCount = watchersCount,
+    login = owner.login,
+    defaultBranch = defaultBranch
 )
 
 fun LicenseDto.toLicense() = License(name)

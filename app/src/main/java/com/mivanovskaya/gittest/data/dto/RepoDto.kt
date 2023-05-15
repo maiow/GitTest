@@ -1,20 +1,26 @@
 package com.mivanovskaya.gittest.data.dto
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class RepoDto(
     val description: String?,
-    val forks_count: Int,
-    val html_url: String,
+    @SerialName("forks_count")
+    val forksCount: Int,
+    @SerialName("html_url")
+    val htmlUrl: String,
     val id: Int,
     val language: String?,
     val license: LicenseDto?,
     val name: String,
-    val stargazers_count: Int,
-    val watchers_count: Int,
+    @SerialName("stargazers_count")
+    val stargazersCount: Int,
+    @SerialName("watchers_count")
+    val watchersCount: Int,
     val owner: OwnerDto,
-    val default_branch: String
+    @SerialName("default_branch")
+    val defaultBranch: String
 )
 
 @Serializable

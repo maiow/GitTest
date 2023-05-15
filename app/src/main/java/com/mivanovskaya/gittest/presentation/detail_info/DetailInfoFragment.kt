@@ -26,9 +26,9 @@ import org.intellij.markdown.parser.MarkdownParser
 @AndroidEntryPoint
 class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
 
-    override fun initBinding(inflater: LayoutInflater) = FragmentDetailInfoBinding.inflate(inflater)
     private val viewModel by viewModels<RepositoryInfoViewModel>()
     private val args by navArgs<DetailInfoFragmentArgs>()
+    override fun initBinding(inflater: LayoutInflater) = FragmentDetailInfoBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -95,20 +95,20 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
             license.text = state.githubRepo.license?.name ?: getString(R.string.no_license)
             stars.text = resources.getQuantityString(
                 R.plurals.stars,
-                state.githubRepo.stargazers_count,
-                state.githubRepo.stargazers_count
+                state.githubRepo.stargazersCount,
+                state.githubRepo.stargazersCount
             )
             forks.text = resources.getQuantityString(
                 R.plurals.forks,
-                state.githubRepo.forks_count,
-                state.githubRepo.forks_count
+                state.githubRepo.forksCount,
+                state.githubRepo.forksCount
             )
             watchers.text = resources.getQuantityString(
                 R.plurals.watchers,
-                state.githubRepo.watchers_count,
-                state.githubRepo.watchers_count
+                state.githubRepo.watchersCount,
+                state.githubRepo.watchersCount
             )
-            link.text = state.githubRepo.html_url
+            link.text = state.githubRepo.htmlUrl
         }
     }
 
