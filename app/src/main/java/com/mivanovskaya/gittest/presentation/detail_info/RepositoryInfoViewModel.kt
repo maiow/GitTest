@@ -2,10 +2,9 @@ package com.mivanovskaya.gittest.presentation.detail_info
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mivanovskaya.gittest.data.AppRepository
+import com.mivanovskaya.gittest.domain.AppRepository
 import com.mivanovskaya.gittest.domain.model.RepoDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -31,7 +30,7 @@ class RepositoryInfoViewModel @Inject constructor(
     fun onRetryButtonClick(repoId: String) = getRepoInfo(repoId)
 
     private fun getRepoInfo(repoId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try {
                 _state.value = State.Loading
                 val repo = repository.getRepository(repoId)

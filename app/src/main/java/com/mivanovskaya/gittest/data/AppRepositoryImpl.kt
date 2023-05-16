@@ -2,50 +2,57 @@ package com.mivanovskaya.gittest.data
 
 import com.mivanovskaya.gittest.data.api.RepositoriesApi
 import com.mivanovskaya.gittest.data.api.UserContentApi
+import com.mivanovskaya.gittest.domain.AppRepository
 import com.mivanovskaya.gittest.domain.model.Repo
 import com.mivanovskaya.gittest.domain.model.RepoDetails
 import com.mivanovskaya.gittest.domain.model.UserInfo
 import com.mivanovskaya.gittest.domain.toListRepo
 import com.mivanovskaya.gittest.domain.toRepoDetails
 import com.mivanovskaya.gittest.domain.toUserInfo
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AppRepository @Inject constructor(
+class AppRepositoryImpl @Inject constructor(
     private val repositoriesApi: RepositoriesApi,
     private val userApi: UserContentApi,
-    private val keyValueStorage: KeyValueStorage
-) {
-    suspend fun getRepositories(): List<Repo> =
+    private val keyValueStorage: KeyValueStorage,
+    private val ioDispatcher: CoroutineDispatcher
+): AppRepository {
+
+    override suspend fun getRepositories(): List<Repo> = withContext(ioDispatcher) {
         repositoriesApi.getRepositories(keyValueStorage.login ?: "", REPOS_QUANTITY, PAGES)
             .toListRepo()
+    }
 
-    suspend fun getRepository(repoId: String): RepoDetails =
+    override suspend fun getRepository(repoId: String): RepoDetails = withContext(ioDispatcher) {
         repositoriesApi.getRepository(keyValueStorage.login ?: "", repoId).toRepoDetails()
+    }
 
-    suspend fun getRepositoryReadme(
+    override suspend fun getRepositoryReadme(
         ownerName: String,
         repositoryName: String,
         branchName: String
-    ): String =
+    ): String = withContext(ioDispatcher) {
         userApi.getRepositoryReadme(ownerName, repositoryName, branchName)
-
-
-    suspend fun signIn(token: String): UserInfo {
-        keyValueStorage.authToken = token
-        return repositoriesApi.getUserInfo().toUserInfo()
     }
 
-    fun getToken() = keyValueStorage.authToken
+    override suspend fun signIn(token: String): UserInfo = withContext(ioDispatcher) {
+        keyValueStorage.authToken = token
+        repositoriesApi.getUserInfo().toUserInfo()
+    }
 
-    fun resetToken() {
+    override fun getToken() = keyValueStorage.authToken
+
+    override fun resetToken() {
         keyValueStorage.authToken = null
     }
 
-    fun saveLogin(login: String) {
+    override fun saveLogin(login: String) {
         keyValueStorage.login = login
     }
 
-    fun logout() {
+    override fun logout() {
         keyValueStorage.login = null
         keyValueStorage.authToken = null
     }

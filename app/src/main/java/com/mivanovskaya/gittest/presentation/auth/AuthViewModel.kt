@@ -4,12 +4,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mivanovskaya.gittest.R
+import com.mivanovskaya.gittest.domain.AppRepository
 import com.mivanovskaya.gittest.presentation.tools.StringValue
 import com.mivanovskaya.gittest.presentation.tools.StringValue.StringResource
-import com.mivanovskaya.gittest.data.AppRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,7 +51,7 @@ class AuthViewModel @Inject constructor(
         if (isNotValid(token)) {
             _state.value = State.InvalidInput(StringResource(R.string.invalid_token))
         } else {
-            viewModelScope.launch(Dispatchers.IO + handler) {
+            viewModelScope.launch(handler) {
                 _state.value = State.Loading
                 repository.saveLogin(repository.signIn(token).login)
                 _state.value = State.Idle

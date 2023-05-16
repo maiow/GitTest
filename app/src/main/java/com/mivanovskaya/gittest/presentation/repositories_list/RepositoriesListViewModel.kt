@@ -2,10 +2,9 @@ package com.mivanovskaya.gittest.presentation.repositories_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mivanovskaya.gittest.data.AppRepository
+import com.mivanovskaya.gittest.domain.AppRepository
 import com.mivanovskaya.gittest.domain.model.Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -29,7 +28,7 @@ class RepositoriesListViewModel @Inject constructor(
     fun onLogoutButtonPressed() = repository.logout()
 
     private fun getRepositories() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try {
                 _state.value = State.Loading
                 val repos = repository.getRepositories()
