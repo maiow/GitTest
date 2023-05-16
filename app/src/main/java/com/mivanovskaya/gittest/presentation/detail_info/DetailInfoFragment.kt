@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -19,6 +20,7 @@ import com.mivanovskaya.gittest.presentation.base.BaseFragment
 import com.mivanovskaya.gittest.presentation.detail_info.RepositoryInfoViewModel.Companion.NO_INTERNET
 import com.mivanovskaya.gittest.presentation.detail_info.RepositoryInfoViewModel.ReadmeState
 import com.mivanovskaya.gittest.presentation.detail_info.RepositoryInfoViewModel.State
+import com.mivanovskaya.gittest.presentation.tools.GlideImageGetter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
@@ -133,18 +135,23 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
             retryButton.isVisible = (state is ReadmeState.Error)
 
             readme.text = when (state) {
-                is ReadmeState.Loaded -> parseReadmeMarkdown(state.markdown)
+                is ReadmeState.Loaded -> parseReadmeMarkdown(state.markdown, readme)
                 is ReadmeState.Empty -> getString(R.string.no_readme)
                 else -> null
             }
         }
     }
 
-    private fun parseReadmeMarkdown(markdown: String): Spanned {
+    private fun parseReadmeMarkdown(markdown: String, readmeView: TextView): Spanned {
         val flavour = CommonMarkFlavourDescriptor()
         val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(markdown)
         val html = HtmlGenerator(markdown, parsedTree, flavour).generateHtml()
-        return HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
+        return HtmlCompat.fromHtml(
+            html,
+            HtmlCompat.FROM_HTML_MODE_COMPACT,
+            GlideImageGetter(readmeView),
+            null
+        )
     }
 
     private fun setRepoInfoVisible(set: Boolean) {

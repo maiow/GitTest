@@ -41,6 +41,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/mini_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/secondary"
         android:textSize="16sp"
@@ -84,23 +85,29 @@
         android:gravity="start"
         android:textColor="@color/white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/watchers"
+        app:layout_constraintBottom_toBottomOf="@+id/license_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline_watchers"
-        app:layout_constraintTop_toBottomOf="@id/link"
+        app:layout_constraintTop_toTopOf="@+id/license_title"
         tools:text="GNU Affero General Public License v3.0" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_license"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="license_title, license" />
 
     <ImageView
         android:id="@+id/icon_star"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/standard_margin"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/standard_margin"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_star"
-        app:layout_constraintEnd_toStartOf="@+id/stars"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/license_title" />
+        app:layout_constraintEnd_toEndOf="@+id/icon_license"
+        app:layout_constraintStart_toStartOf="@+id/icon_license"
+        app:layout_constraintTop_toBottomOf="@id/barrier_license" />
 
     <TextView
         android:id="@+id/stars"
@@ -112,12 +119,10 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/icon_star"
+        app:layout_constraintEnd_toStartOf="@id/guideline_forks"
         app:layout_constraintStart_toEndOf="@id/icon_star"
         app:layout_constraintTop_toTopOf="@id/icon_star"
         tools:text="1010 stars" />
-
-    <!-- гайдлайны добавлены для того, чтобы на foldable, tablets и desktop
-    вьюшки не расползались по широкому экрану -->
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_forks"
@@ -148,6 +153,7 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/icon_fork"
+        app:layout_constraintEnd_toStartOf="@id/guideline_watchers"
         app:layout_constraintStart_toEndOf="@id/icon_fork"
         app:layout_constraintTop_toTopOf="@id/icon_fork"
         tools:text="101 forks" />
@@ -176,14 +182,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/micro_margin"
+        android:layout_marginEnd="24dp"
         android:fontFamily="sans-serif-medium"
         android:text="@plurals/watchers"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/icon_watcher"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icon_watcher"
         app:layout_constraintTop_toTopOf="@id/icon_watcher"
         tools:text="10 watchers" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="stars, forks, watchers" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -193,14 +208,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/icon_star">
+        app:layout_constraintTop_toBottomOf="@+id/barrier_scroll">
 
         <TextView
             android:id="@+id/readme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/mini_margin"
-            android:layout_marginEnd="@dimen/mini_margin"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
             android:layout_marginBottom="@dimen/standard_margin"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
