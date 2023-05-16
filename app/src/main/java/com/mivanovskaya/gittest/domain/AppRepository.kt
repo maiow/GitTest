@@ -4,6 +4,9 @@ import com.mivanovskaya.gittest.domain.model.Repo
 import com.mivanovskaya.gittest.domain.model.RepoDetails
 import com.mivanovskaya.gittest.domain.model.UserInfo
 
+/** сделано по ТЗ, в нем AppRepository отвечает и за авторизацию,
+ * и за получение данных по репозиториям*/
+
 interface AppRepository {
 
     suspend fun getRepositories(): List<Repo>

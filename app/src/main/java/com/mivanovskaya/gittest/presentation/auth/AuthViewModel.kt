@@ -1,6 +1,5 @@
 package com.mivanovskaya.gittest.presentation.auth
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mivanovskaya.gittest.R
@@ -22,7 +21,7 @@ class AuthViewModel @Inject constructor(
     private val repository: AppRepository
 ) : ViewModel() {
 
-    private val token: MutableLiveData<String> = MutableLiveData()
+    private val token: MutableStateFlow<String?> = MutableStateFlow(null)
 
     private val _state = MutableStateFlow<State>(State.Idle)
     val state = _state.asStateFlow()
@@ -48,23 +47,23 @@ class AuthViewModel @Inject constructor(
     }
 
     fun onSignButtonPressed(token: String) {
-        if (isNotValid(token)) {
-            _state.value = State.InvalidInput(StringResource(R.string.invalid_token))
-        } else {
+        if (isValid(token)) {
             viewModelScope.launch(handler) {
                 _state.value = State.Loading
                 repository.saveLogin(repository.signIn(token).login)
                 _state.value = State.Idle
                 _actions.send(Action.RouteToMain)
             }
-        }
+        } else _state.value = State.InvalidInput(StringResource(R.string.invalid_token))
     }
 
-    private fun isNotValid(token: String): Boolean = token.contains(Regex("""[ЁёА-я]"""))
+    private fun isValid(token: String): Boolean =
+        token.contains(Regex("^ghp_[a-zA-Z0-9]{36}$"))
 
     sealed interface State {
         object Idle : State
         object Loading : State
+
         /** reason не String как в ТЗ, а StringValue, чтобы ViewModel не зависел от context*/
         data class InvalidInput(val reason: StringValue) : State
     }

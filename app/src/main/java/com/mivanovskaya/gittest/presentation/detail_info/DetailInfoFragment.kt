@@ -7,7 +7,9 @@ import android.view.View
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -56,16 +58,20 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
 
     private fun observeDetailInfoState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.state.collect { state ->
-                updateUiOnDetailInfo(state)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    updateUiOnDetailInfo(state)
+                }
             }
         }
     }
 
     private fun observeReadmeState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.readmeState.collect { state ->
-                updateUiOnReadme(state)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.readmeState.collect { state ->
+                    updateUiOnReadme(state)
+                }
             }
         }
     }

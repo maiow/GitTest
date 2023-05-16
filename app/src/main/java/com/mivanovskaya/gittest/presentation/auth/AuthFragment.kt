@@ -8,7 +8,9 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.mivanovskaya.gittest.R
 import com.mivanovskaya.gittest.databinding.FragmentAuthBinding
@@ -29,32 +31,27 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setSignButton()
         observeActions()
         observeState()
-        setEditTextFocusChange()
-        setEditTextClick()
+        setListeners()
     }
 
     private fun observeState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.state.collect { state ->
-                updateUiOnState(state)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    updateUiOnState(state)
+                }
             }
-        }
-    }
-
-    private fun setSignButton() {
-        binding.signButton.setOnClickListener {
-            if (binding.editText.text != null)
-                viewModel.onSignButtonPressed(binding.editText.text.toString())
         }
     }
 
     private fun observeActions() {
         lifecycleScope.launch {
-            viewModel.actions.collect {
-                handleAction(it)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.actions.collect {
+                    handleAction(it)
+                }
             }
         }
     }
@@ -70,8 +67,9 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
         }
     }
 
-    private fun routeToMain() =
-        findNavController().navigate(R.id.action_authFragment_to_repositoriesListFragment)
+    private fun routeToMain() = findNavController().navigate(
+        AuthFragmentDirections.actionAuthFragmentToRepositoriesListFragment()
+    )
 
     private fun updateUiOnState(state: AuthViewModel.State) {
         with(binding) {
@@ -84,15 +82,16 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
         }
     }
 
-    private fun setInvalidTokenErrorSign(state: AuthViewModel.State) {
-        binding.invalidTokenError.isVisible = state is AuthViewModel.State.InvalidInput
-        binding.invalidTokenError.text =
-            if (state is AuthViewModel.State.InvalidInput)
-                state.reason.asString(requireContext())
-            else getString(R.string.error)
-    }
+    private fun setListeners() {
+        binding.signButton.setOnClickListener {
+            if (binding.editText.text != null)
+                viewModel.onSignButtonPressed(binding.editText.text.toString())
+        }
 
-    private fun setEditTextFocusChange() {
+        binding.editText.setOnClickListener {
+            updateUiOnEditTextClickOrFocus()
+        }
+
         binding.editText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 updateUiOnEditTextClickOrFocus()
@@ -100,10 +99,12 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
         }
     }
 
-    private fun setEditTextClick() {
-        binding.editText.setOnClickListener {
-            updateUiOnEditTextClickOrFocus()
-        }
+    private fun setInvalidTokenErrorSign(state: AuthViewModel.State) {
+        binding.invalidTokenError.isVisible = state is AuthViewModel.State.InvalidInput
+        binding.invalidTokenError.text =
+            if (state is AuthViewModel.State.InvalidInput)
+                state.reason.asString(requireContext())
+            else getString(R.string.error)
     }
 
     private fun updateUiOnEditTextClickOrFocus() {
