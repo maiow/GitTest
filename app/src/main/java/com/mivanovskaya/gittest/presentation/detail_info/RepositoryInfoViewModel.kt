@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mivanovskaya.gittest.domain.AppRepository
 import com.mivanovskaya.gittest.domain.model.RepoDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -30,7 +31,8 @@ class RepositoryInfoViewModel @Inject constructor(
     fun onRetryButtonClick(repoId: String) = getRepoInfo(repoId)
 
     private fun getRepoInfo(repoId: String) {
-        viewModelScope.launch {
+        val job = Job()
+        viewModelScope.launch(job) {
             try {
                 _state.value = State.Loading
                 val repo = repository.getRepository(repoId)
@@ -44,6 +46,7 @@ class RepositoryInfoViewModel @Inject constructor(
             } catch (e: Exception) {
                 handleOtherException(e)
             }
+            job.cancel()
         }
     }
 

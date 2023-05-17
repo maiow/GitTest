@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mivanovskaya.gittest.domain.AppRepository
 import com.mivanovskaya.gittest.domain.model.Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -28,7 +29,8 @@ class RepositoriesListViewModel @Inject constructor(
     fun onLogoutButtonPressed() = repository.logout()
 
     private fun getRepositories() {
-        viewModelScope.launch {
+        val job = Job()
+        viewModelScope.launch(job) {
             try {
                 _state.value = State.Loading
                 val repos = repository.getRepositories()
@@ -41,6 +43,7 @@ class RepositoriesListViewModel @Inject constructor(
             } catch (e: Exception) {
                 _state.value = State.Error(e.message.toString())
             }
+            job.cancel()
         }
     }
 
