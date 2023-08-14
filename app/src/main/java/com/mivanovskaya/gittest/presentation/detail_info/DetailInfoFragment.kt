@@ -5,96 +5,98 @@ import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mivanovskaya.gittest.R
 import com.mivanovskaya.gittest.databinding.FragmentDetailInfoBinding
 import com.mivanovskaya.gittest.presentation.base.BaseFragment
-import com.mivanovskaya.gittest.presentation.detail_info.RepositoryInfoViewModel.Companion.NO_INTERNET
 import com.mivanovskaya.gittest.presentation.detail_info.RepositoryInfoViewModel.ReadmeState
 import com.mivanovskaya.gittest.presentation.detail_info.RepositoryInfoViewModel.State
 import com.mivanovskaya.gittest.presentation.tools.GlideImageGetter
+import com.mivanovskaya.gittest.presentation.tools.assistedViewModel
+import com.mivanovskaya.gittest.presentation.tools.collectInStartedState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
 
-    private val viewModel by viewModels<RepositoryInfoViewModel>()
-    private val args by navArgs<DetailInfoFragmentArgs>()
+    private val args: DetailInfoFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var factory: RepositoryInfoViewModel.Factory
+
+    private val viewModel: RepositoryInfoViewModel by assistedViewModel {
+        factory.create(repoName = args.repoName)
+    }
+
     override fun initBinding(inflater: LayoutInflater) = FragmentDetailInfoBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        onGettingArgument()
         setToolbarTitle()
         observeDetailInfoState()
-        observeReadmeState()
-        setAppBarBackArrowClick()
         setRetryButton()
         setLogoutButton()
     }
 
-    private fun onGettingArgument() = viewModel.onGettingArgument(args.repoId)
-
     private fun setToolbarTitle() {
-        binding.repositoriesBar.title = args.repoId
-    }
-
-    private fun setAppBarBackArrowClick() {
-        binding.repositoriesBar.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).title = args.repoName
     }
 
     private fun observeDetailInfoState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect { state ->
-                    updateUiOnDetailInfo(state)
-                }
-            }
-        }
-    }
-
-    private fun observeReadmeState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.readmeState.collect { state ->
-                    updateUiOnReadme(state)
-                }
-            }
-        }
+        viewLifecycleOwner.collectInStartedState(viewModel.state, ::updateUiOnDetailInfo)
     }
 
     private fun updateUiOnDetailInfo(state: State) {
         with(binding) {
             commonProgress.progressBar.isVisible = (state == State.Loading)
             commonError.connectionError.isVisible =
-                ((state is State.Error) && (state.error == NO_INTERNET))
-            retryButton.isVisible = commonError.connectionError.isVisible
+                (state is State.NoInternetError ||
+                        state is State.Loaded && state.readmeState is ReadmeState.NoInternetError)
 
-            if ((state is State.Error) && (state.error != NO_INTERNET)) {
-                error.somethingError.isVisible = true
-                error.errorDescription.text =
-                    getString(R.string.error_with_description, state.error)
-            }
+            error.somethingError.isVisible =
+                (state is State.Error ||
+                        state is State.Loaded && state.readmeState is ReadmeState.Error)
 
-            if (state is State.Loaded) {
-                setRepoInfoVisible(true)
-                showRepoInfo(state)
-            } else setRepoInfoVisible(false)
+            val errorText =
+                if (state is State.Error) getString(R.string.error_with_description, state.error)
+                else if (state is State.Loaded && state.readmeState is ReadmeState.Error)
+                    getString(
+                        R.string.error_with_description, state.readmeState.error
+                    )
+                else null
+
+            error.errorDescription.text = errorText
+
+            retryButton.isVisible =
+                commonError.connectionError.isVisible || error.somethingError.isVisible
+
+
+            repoInfoGroup.isVisible = state is State.Loaded
+            if (state is State.Loaded) showRepoInfo(state)
+
+            readmeProgress.isVisible =
+                state is State.Loaded && state.readmeState is ReadmeState.Loading
+            readme.isVisible =
+                state is State.Loaded && state.readmeState is ReadmeState.Loaded ||
+                        state is State.Loaded && state.readmeState is ReadmeState.Empty
+
+            val readmeText = if (state is State.Loaded && state.readmeState is ReadmeState.Loaded) {
+                parseReadmeMarkdown(state.readmeState.markdown, readme)
+            } else if (state is State.Loaded && state.readmeState is ReadmeState.Empty) {
+                getString(R.string.no_readme)
+            } else null
+
+            readme.text = readmeText
         }
     }
 
@@ -120,64 +122,23 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
         }
     }
 
-    private fun updateUiOnReadme(state: ReadmeState) {
-        with(binding) {
-            readmeProgress.isVisible = state is ReadmeState.Loading
-            readme.isVisible = (state is ReadmeState.Loaded) || (state is ReadmeState.Empty)
-
-            readmeError.connectionError.isVisible =
-                ((state is ReadmeState.Error) && (state.error == NO_INTERNET))
-
-            if ((state is ReadmeState.Error) && (state.error != NO_INTERNET)) {
-                error.somethingError.isVisible = true
-                error.errorDescription.text = state.error
-            }
-            retryButton.isVisible = (state is ReadmeState.Error)
-
-            readme.text = when (state) {
-                is ReadmeState.Loaded -> parseReadmeMarkdown(state.markdown, readme)
-                is ReadmeState.Empty -> getString(R.string.no_readme)
-                else -> null
-            }
-        }
-    }
-
     private fun parseReadmeMarkdown(markdown: String, readmeView: TextView): Spanned {
         val flavour = CommonMarkFlavourDescriptor()
         val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(markdown)
         val html = HtmlGenerator(markdown, parsedTree, flavour).generateHtml()
         return HtmlCompat.fromHtml(
-            html,
-            HtmlCompat.FROM_HTML_MODE_COMPACT,
-            GlideImageGetter(readmeView),
-            null
+            html, HtmlCompat.FROM_HTML_MODE_COMPACT, GlideImageGetter(readmeView), null
         )
-    }
-
-    private fun setRepoInfoVisible(set: Boolean) {
-        with(binding) {
-            license.isVisible = set
-            stars.isVisible = set
-            forks.isVisible = set
-            watchers.isVisible = set
-            link.isVisible = set
-            licenseTitle.isVisible = set
-            iconLicense.isVisible = set
-            iconStar.isVisible = set
-            iconFork.isVisible = set
-            iconWatcher.isVisible = set
-            iconLink.isVisible = set
-        }
     }
 
     private fun setRetryButton() {
         binding.retryButton.setOnClickListener {
-            viewModel.onRetryButtonClick(args.repoId)
+            viewModel.onRetryButtonClick()
         }
     }
 
     private fun setLogoutButton() {
-        val button = binding.repositoriesBar.menu.getItem(0)
+        val button = requireActivity().findViewById<Toolbar>(R.id.toolbar).menu.getItem(0)
         button.setOnMenuItemClickListener {
             setLogoutAlertDialog()
             true
@@ -195,8 +156,8 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
                 viewModel.onLogoutButtonPressed()
                 navigateToAuth()
             }
-            .setNegativeButton(R.string.no) { _, _ ->
-                dialog.create().hide()
+            .setNegativeButton(R.string.no) { currentDialog, _ ->
+                currentDialog.cancel()
             }
         dialog.create().show()
     }

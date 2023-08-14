@@ -13,21 +13,15 @@ import javax.inject.Singleton
 @Singleton
 class KeyValueStorage @Inject constructor(@ApplicationContext context: Context) {
 
-    private val prefs: SharedPreferences
-    private val editor: SharedPreferences.Editor
+    private val prefs: SharedPreferences = createSharedPrefs(context)
 
     var authToken: String?
-        get() = prefs.getString(AUTH_TOKEN_KEY, "")
-        set(token) = editor.putString(AUTH_TOKEN_KEY, token).apply()
+        get() = prefs.getString(AUTH_TOKEN_KEY, null)
+        set(token) = prefs.edit().putString(AUTH_TOKEN_KEY, token).apply()
 
     var login: String?
-        get() = prefs.getString(LOGIN_KEY, "")
-        set(login) = editor.putString(LOGIN_KEY, login).apply()
-
-    init {
-        prefs = createSharedPrefs(context)
-        editor = prefs.edit()
-    }
+        get() = prefs.getString(LOGIN_KEY, null)
+        set(login) = prefs.edit().putString(LOGIN_KEY, login).apply()
 
     private fun createSharedPrefs(context: Context): SharedPreferences {
 
@@ -49,8 +43,8 @@ class KeyValueStorage @Inject constructor(@ApplicationContext context: Context) 
     }
 
     companion object {
-        const val AUTH_TOKEN_KEY = "auth_token"
-        const val SHARED_PREF_NAME = "shared_name"
-        const val LOGIN_KEY = "login"
+        private const val AUTH_TOKEN_KEY = "auth_token"
+        private const val SHARED_PREF_NAME = "shared_name"
+        private const val LOGIN_KEY = "login"
     }
 }

@@ -20,45 +20,39 @@ class RepositoriesListViewModel @Inject constructor(
     private val _state = MutableStateFlow<State>(State.Loading)
     val state = _state.asStateFlow()
 
+    private var job: Job? = null
+
     init {
         getRepositories()
     }
 
-    fun onRetryButtonClick() = getRepositories()
+    fun onRetryButtonClick(): Unit = getRepositories()
 
-    fun onLogoutButtonPressed() = repository.logout()
+    fun onLogoutButtonPressed(): Unit = repository.logout()
 
     private fun getRepositories() {
-        val job = Job()
-        viewModelScope.launch(job) {
+        job?.cancel()
+        job = viewModelScope.launch {
             try {
                 _state.value = State.Loading
-                val repos = repository.getRepositories()
+                val repos = repository.getRepositories(limit = 10, page = 1)
                 if (repos.isEmpty())
                     _state.value = State.Empty
                 else
                     _state.value = State.Loaded(repos)
             } catch (e: IOException) {
-                handleNetworkException()
+                _state.value = State.NoInternetError
             } catch (e: Exception) {
                 _state.value = State.Error(e.message.toString())
             }
-            job.cancel()
         }
     }
-
-    private fun handleNetworkException() {
-            _state.value = State.Error(NO_INTERNET)
-        }
 
     sealed interface State {
         object Loading : State
+        object NoInternetError : State
         data class Loaded(val repos: List<Repo>) : State
         data class Error(val error: String) : State
         object Empty : State
-    }
-
-    companion object {
-        const val NO_INTERNET = "NO_INTERNET"
     }
 }

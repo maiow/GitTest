@@ -50,7 +50,7 @@ class AuthViewModel @Inject constructor(
         if (isValid(token)) {
             viewModelScope.launch(handler) {
                 _state.value = State.Loading
-                repository.saveLogin(repository.signIn(token).login)
+                repository.saveCredentials(login = repository.signIn(token).login, token = token)
                 _state.value = State.Idle
                 _actions.send(Action.RouteToMain)
             }
@@ -63,8 +63,6 @@ class AuthViewModel @Inject constructor(
     sealed interface State {
         object Idle : State
         object Loading : State
-
-        /** reason не String как в ТЗ, а StringValue, чтобы ViewModel не зависел от context*/
         data class InvalidInput(val reason: StringValue) : State
     }
 

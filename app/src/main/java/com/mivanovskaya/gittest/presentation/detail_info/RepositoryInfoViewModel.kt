@@ -4,94 +4,123 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mivanovskaya.gittest.domain.AppRepository
 import com.mivanovskaya.gittest.domain.model.RepoDetails
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
-import javax.inject.Inject
 
-@HiltViewModel
-class RepositoryInfoViewModel @Inject constructor(
-    private val repository: AppRepository
+class RepositoryInfoViewModel @AssistedInject constructor(
+    private val repository: AppRepository,
+    @Assisted private val repoName: String
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<State>(State.Loading)
     val state = _state.asStateFlow()
 
     private val _readmeState = MutableStateFlow<ReadmeState>(ReadmeState.Loading)
-    val readmeState = _readmeState.asStateFlow()
 
-    fun onGettingArgument(repoId: String) = getRepoInfo(repoId)
+    private var job: Job? = null
 
-    fun onLogoutButtonPressed() = repository.logout()
+    init {
+        getRepoInfo(repoName)
+    }
 
-    fun onRetryButtonClick(repoId: String) = getRepoInfo(repoId)
+    fun onLogoutButtonPressed(): Unit = repository.logout()
 
-    private fun getRepoInfo(repoId: String) {
-        val job = Job()
-        viewModelScope.launch(job) {
+    fun onRetryButtonClick(): Unit = getRepoInfo(repoName)
+
+    private fun getRepoInfo(repoName: String) {
+        var stateLoaded: State.Loaded? = null
+        job?.cancel()
+        job = viewModelScope.launch {
             try {
                 _state.value = State.Loading
-                val repo = repository.getRepository(repoId)
+                val repo: RepoDetails = repository.getRepository(repoName)
+                stateLoaded = State.Loaded(repo, ReadmeState.Loading)
                 _state.value = State.Loaded(repo, ReadmeState.Loading)
-                getReadme(repo, repoId)
+
+                getReadme(State.Loaded(repo, ReadmeState.Loading))
 
             } catch (e: HttpException) {
-                handleHttpException(e)
+                handleHttpException(e, stateLoaded)
             } catch (e: IOException) {
-                handleNetworkException()
+                handleNetworkException(stateLoaded)
             } catch (e: Exception) {
-                handleOtherException(e)
+                handleOtherException(e, stateLoaded)
             }
-            job.cancel()
         }
     }
 
-    private suspend fun getReadme(repo: RepoDetails, repoId: String) {
-        val readme = repository.getRepositoryReadme(
-            ownerName = repo.login,
-            repositoryName = repoId,
-            branchName = repo.defaultBranch
+    private suspend fun getReadme(state: State.Loaded) {
+        val readme: String = repository.getRepositoryReadme(
+            ownerName = state.githubRepo.owner,
+            repositoryName = state.githubRepo.name,
+            branchName = state.githubRepo.defaultBranch
         )
-        if (readme.isBlank()) _readmeState.value = ReadmeState.Empty
-        else _readmeState.value = ReadmeState.Loaded(readme)
+        if (readme.isBlank()) {
+            _readmeState.value = ReadmeState.Empty
+            _state.value = state.copy(readmeState = ReadmeState.Empty)
+        } else {
+            _readmeState.value = ReadmeState.Loaded(readme)
+            _state.value = state.copy(readmeState = ReadmeState.Loaded(readme))
+        }
     }
 
-    private fun handleHttpException(e: HttpException) {
+    private fun handleHttpException(e: HttpException, stateLoaded: State.Loaded?) {
         if (_state.value is State.Loading) {
             _state.value = State.Error(e.message.toString())
             _readmeState.value = ReadmeState.Error(e.message.toString())
         } else {
-            if (e.code() == 404) _readmeState.value = ReadmeState.Empty
-            else _readmeState.value = ReadmeState.Error(e.message.toString())
+            if (e.code() == 404) {
+                _readmeState.value = ReadmeState.Empty
+                updateStateLoaded(stateLoaded = stateLoaded, readmeState = ReadmeState.Empty)
+            } else {
+                _readmeState.value = ReadmeState.Error(e.message.toString())
+                updateStateLoaded(
+                    stateLoaded = stateLoaded,
+                    readmeState = ReadmeState.Error(e.message.toString())
+                )
+            }
         }
     }
 
-    private fun handleNetworkException() {
-        if (_state.value is State.Loaded)
-            _readmeState.value = ReadmeState.Error(NO_INTERNET)
-        else {
-            _state.value = State.Error(NO_INTERNET)
-            _readmeState.value = ReadmeState.Error(NO_INTERNET)
+    private fun handleNetworkException(stateLoaded: State.Loaded?) {
+        if (_state.value is State.Loaded) {
+            _readmeState.value = ReadmeState.NoInternetError
+            updateStateLoaded(stateLoaded = stateLoaded, readmeState = ReadmeState.NoInternetError)
+        } else {
+            _state.value = State.NoInternetError
+            _readmeState.value = ReadmeState.NoInternetError
         }
     }
 
-    private fun handleOtherException(e: Exception) {
-        if (_state.value is State.Loaded)
+    private fun handleOtherException(e: Exception, stateLoaded: State.Loaded?) {
+        if (_state.value is State.Loaded) {
             _readmeState.value = ReadmeState.Error(e.message.toString())
-        else {
+            updateStateLoaded(
+                stateLoaded = stateLoaded,
+                readmeState = ReadmeState.Error(e.message.toString())
+            )
+        } else {
             _state.value = State.Error(e.message.toString())
             _readmeState.value = ReadmeState.Error(e.message.toString())
         }
     }
 
+    private fun updateStateLoaded(stateLoaded: State.Loaded?, readmeState: ReadmeState) {
+        if (stateLoaded != null)
+            _state.value = stateLoaded.copy(readmeState = readmeState)
+    }
+
     sealed interface State {
         object Loading : State
+        object NoInternetError : State
         data class Error(val error: String) : State
-
         data class Loaded(
             val githubRepo: RepoDetails,
             val readmeState: ReadmeState
@@ -101,11 +130,13 @@ class RepositoryInfoViewModel @Inject constructor(
     sealed interface ReadmeState {
         object Loading : ReadmeState
         object Empty : ReadmeState
+        object NoInternetError : ReadmeState
         data class Error(val error: String) : ReadmeState
         data class Loaded(val markdown: String) : ReadmeState
     }
 
-    companion object {
-        const val NO_INTERNET = "NO_INTERNET"
+    @AssistedFactory
+    interface Factory {
+        fun create(repoName: String): RepositoryInfoViewModel
     }
 }

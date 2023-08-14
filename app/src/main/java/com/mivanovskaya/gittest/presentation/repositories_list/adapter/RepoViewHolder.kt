@@ -3,8 +3,9 @@ package com.mivanovskaya.gittest.presentation.repositories_list.adapter
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.mivanovskaya.gittest.R
-import com.mivanovskaya.gittest.domain.model.Repo
 import com.mivanovskaya.gittest.databinding.RepositoriesViewHolderBinding
+import com.mivanovskaya.gittest.domain.model.Repo
+import com.mivanovskaya.gittest.presentation.tools.Language
 
 class RepoViewHolder(private val binding: RepositoriesViewHolderBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -17,35 +18,16 @@ class RepoViewHolder(private val binding: RepositoriesViewHolderBinding) :
             title.text = item.name
             description.text = item.description
             language.text = item.language
-            when (item.language) {
-                JAVA -> language.setTextColor(
-                    ContextCompat.getColor(repoCard.context, R.color.yellow)
-                )
 
-                KOTLIN -> language.setTextColor(
-                    ContextCompat.getColor(repoCard.context, R.color.lilac)
-                )
-
-                PYTHON -> language.setTextColor(
-                    ContextCompat.getColor(repoCard.context, R.color.accent)
-                )
-
-                JAVA_SCRIPT -> language.setTextColor(
-                    ContextCompat.getColor(repoCard.context, R.color.secondary)
-                )
-
-                else -> language.setTextColor(
-                    ContextCompat.getColor(repoCard.context, R.color.white_50_opacity)
-                )
+            val color = when (item.language) {
+                Language.Java.name -> R.color.yellow
+                Language.Kotlin.name -> R.color.lilac
+                Language.Python.name -> R.color.accent
+                Language.JavaScript.name -> R.color.secondary
+                else -> R.color.white_50_opacity
             }
+            language.setTextColor(ContextCompat.getColor(repoCard.context, color))
         }
-    }
-
-    companion object {
-        const val JAVA = "Java"
-        const val KOTLIN = "Kotlin"
-        const val PYTHON = "Python"
-        const val JAVA_SCRIPT = "JavaScript"
     }
 }
 

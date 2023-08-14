@@ -2,11 +2,12 @@ package com.mivanovskaya.gittest.data
 
 import com.mivanovskaya.gittest.data.api.RepositoriesApi
 import com.mivanovskaya.gittest.data.api.UserContentApi
+import com.mivanovskaya.gittest.di.IoDispatcher
 import com.mivanovskaya.gittest.domain.AppRepository
 import com.mivanovskaya.gittest.domain.model.Repo
 import com.mivanovskaya.gittest.domain.model.RepoDetails
 import com.mivanovskaya.gittest.domain.model.UserInfo
-import com.mivanovskaya.gittest.domain.toListRepo
+import com.mivanovskaya.gittest.domain.toRepo
 import com.mivanovskaya.gittest.domain.toRepoDetails
 import com.mivanovskaya.gittest.domain.toUserInfo
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,39 +18,50 @@ class AppRepositoryImpl @Inject constructor(
     private val repositoriesApi: RepositoriesApi,
     private val userApi: UserContentApi,
     private val keyValueStorage: KeyValueStorage,
-    private val ioDispatcher: CoroutineDispatcher
-): AppRepository {
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+) : AppRepository {
 
-    override suspend fun getRepositories(): List<Repo> = withContext(ioDispatcher) {
-        repositoriesApi.getRepositories(keyValueStorage.login ?: "", REPOS_QUANTITY, PAGES)
-            .toListRepo()
-    }
+    override suspend fun getRepositories(limit: Int, page: Int): List<Repo> =
+        withContext(ioDispatcher) {
+            repositoriesApi.getRepositories(
+                user = requireNotNull(keyValueStorage.login) {
+                    "Error: authorized username not found in storage"
+                },
+                limit = limit,
+                page = page
+            ).map { it.toRepo() }
+        }
 
-    override suspend fun getRepository(repoId: String): RepoDetails = withContext(ioDispatcher) {
-        repositoriesApi.getRepository(keyValueStorage.login ?: "", repoId).toRepoDetails()
+    override suspend fun getRepository(repoName: String): RepoDetails = withContext(ioDispatcher) {
+        repositoriesApi.getRepository(
+            user = requireNotNull(keyValueStorage.login) {
+                "Error: authorized username not found in storage"
+            },
+            repoName = repoName
+        ).toRepoDetails()
     }
 
     override suspend fun getRepositoryReadme(
-        ownerName: String,
-        repositoryName: String,
-        branchName: String
+        ownerName: String, repositoryName: String, branchName: String
     ): String = withContext(ioDispatcher) {
-        userApi.getRepositoryReadme(ownerName, repositoryName, branchName)
+        userApi.getRepositoryReadme(
+            ownerName = ownerName, repositoryName = repositoryName, branchName = branchName
+        )
     }
 
     override suspend fun signIn(token: String): UserInfo = withContext(ioDispatcher) {
-        keyValueStorage.authToken = token
-        repositoriesApi.getUserInfo().toUserInfo()
+        repositoriesApi.getUserInfo("Bearer $token").toUserInfo()
     }
 
-    override fun getToken() = keyValueStorage.authToken
+    override fun getToken(): String? = keyValueStorage.authToken
 
     override fun resetToken() {
         keyValueStorage.authToken = null
     }
 
-    override fun saveLogin(login: String) {
+    override fun saveCredentials(login: String, token: String) {
         keyValueStorage.login = login
+        keyValueStorage.authToken = token
     }
 
     override fun logout() {
@@ -57,8 +69,4 @@ class AppRepositoryImpl @Inject constructor(
         keyValueStorage.authToken = null
     }
 
-    companion object {
-        private const val REPOS_QUANTITY = 10
-        private const val PAGES = 1
-    }
 }

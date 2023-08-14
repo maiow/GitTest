@@ -1,23 +1,8 @@
 package com.mivanovskaya.gittest.presentation.tools
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mivanovskaya.gittest.R
-
-fun Context.hideKeyboard(view: View) {
-    (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.apply {
-        hideSoftInputFromWindow(view.windowToken, 0)
-    }
-}
-
-fun setAppColor(context: Context, color: Int) = ContextCompat.getColor(context, color)
-
-fun setBackgroundAppColor(context: Context, color: Int) =
-    ColorStateList.valueOf(ContextCompat.getColor(context, color))
 
 fun showAlertDialog(message: String, context: Context) {
     val dialog =

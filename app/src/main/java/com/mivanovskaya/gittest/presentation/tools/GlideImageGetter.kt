@@ -25,7 +25,7 @@ class GlideImageGetter(private val textView: TextView) : ImageGetter {
         private var drawable: Drawable? = null
         override fun draw(canvas: Canvas) {
             if (drawable != null) {
-                drawable!!.draw(canvas)
+                drawable?.draw(canvas)
             }
         }
 

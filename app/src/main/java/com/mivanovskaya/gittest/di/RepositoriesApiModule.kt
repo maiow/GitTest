@@ -23,12 +23,18 @@ class RepositoriesApiModule {
         keyValueStorage: KeyValueStorage
     ): OkHttpClient =
         OkHttpClient.Builder().addInterceptor { chain ->
-            val request =
-                chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${keyValueStorage.authToken}")
-                    .addHeader("X-GitHub-Api-Version", "2022-11-28")
-                    .addHeader("Accept", "application/vnd.github+json")
-                    .build()
+            val originalRequest = chain.request()
+            val request = originalRequest.newBuilder()
+                .run {
+                    if (keyValueStorage.authToken != null && originalRequest.headers["Authorization"] == null) {
+                        this.addHeader("Authorization", "Bearer ${keyValueStorage.authToken}")
+                    } else {
+                        this
+                    }
+                }
+                .addHeader("X-GitHub-Api-Version", "2022-11-28")
+                .addHeader("Accept", "application/vnd.github+json")
+                .build()
             chain.proceed(request)
         }.build()
 
