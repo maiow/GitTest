@@ -41,19 +41,24 @@ class RepositoriesListFragment : BaseFragment<FragmentRepositoriesListBinding>()
             commonProgress.progressBar.isVisible = (state == State.Loading)
             emptyRepo.isVisible = (state == State.Empty)
 
-            commonConnectError.connectionError.isVisible = (state is State.NoInternetError)
+            commonConnectError.connectionError.isVisible =
+                (state is State.Error && state.isNetworkError)
 
-            commonOtherError.somethingError.isVisible = (state is State.Error)
+            commonOtherError.somethingError.isVisible =
+                (state is State.Error && !state.isNetworkError)
 
             val errorText =
-                if (state is State.Error) {
-                    getString(R.string.error_with_description, state.error)
+                if (state is State.Error && !state.isNetworkError) {
+                    getString(
+                        R.string.error_with_description,
+                        state.error.asString(requireContext())
+                    )
                 } else null
             commonOtherError.errorDescription.text = errorText
 
             recycler.isVisible = (state is State.Loaded)
             retryButton.isVisible =
-                (state is State.Error) || (state is State.NoInternetError) || (state is State.Empty)
+                (state is State.Error) || (state is State.Empty)
         }
         setRetryButtonText(state)
         submitDataToAdapter(state, adapter)

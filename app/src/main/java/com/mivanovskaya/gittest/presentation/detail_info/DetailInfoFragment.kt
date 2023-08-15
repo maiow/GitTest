@@ -60,18 +60,28 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
         with(binding) {
             commonProgress.progressBar.isVisible = (state == State.Loading)
             commonError.connectionError.isVisible =
-                (state is State.NoInternetError ||
-                        state is State.Loaded && state.readmeState is ReadmeState.NoInternetError)
+                (state is State.Error && state.isNetworkError ||
+                        state is State.Loaded && state.readmeState is ReadmeState.Error
+                        && state.readmeState.isNetworkError)
 
             error.somethingError.isVisible =
-                (state is State.Error ||
-                        state is State.Loaded && state.readmeState is ReadmeState.Error)
+                (state is State.Error && !state.isNetworkError ||
+                        state is State.Loaded && state.readmeState is ReadmeState.Error
+                        && !state.readmeState.isNetworkError)
 
             val errorText =
-                if (state is State.Error) getString(R.string.error_with_description, state.error)
-                else if (state is State.Loaded && state.readmeState is ReadmeState.Error)
+                if (state is State.Error && !state.isNetworkError)
                     getString(
-                        R.string.error_with_description, state.readmeState.error
+                        R.string.error_with_description,
+                        state.error.asString(requireContext())
+                    )
+                else if (state is State.Loaded && state.readmeState is ReadmeState.Error
+                    && !state.readmeState.isNetworkError
+                )
+                    getString(
+                        R.string.error_with_description, state.readmeState.error.asString(
+                            requireContext()
+                        )
                     )
                 else null
 

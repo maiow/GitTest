@@ -17,7 +17,7 @@ interface AppRepository {
         ownerName: String,
         repositoryName: String,
         branchName: String
-    ): String
+    ): String?
 
     suspend fun signIn(token: String): UserInfo
 

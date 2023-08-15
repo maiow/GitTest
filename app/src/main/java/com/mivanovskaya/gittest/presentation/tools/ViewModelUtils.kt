@@ -5,6 +5,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.mivanovskaya.gittest.R
+import java.io.IOException
 
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T : ViewModel> Fragment.assistedViewModel(
@@ -17,5 +19,19 @@ inline fun <reified T : ViewModel> Fragment.assistedViewModel(
             handle: SavedStateHandle
         ) =
             viewModelProducer(handle) as T
+    }
+}
+
+suspend fun <T> requestWithErrorHandling(
+    block: suspend () -> Unit,
+    errorFactory: (Boolean, StringValue) -> T,
+    setState: (T) -> Unit
+) {
+    try {
+        block()
+    } catch (e: IOException) {
+        setState(errorFactory(true, StringValue.StringResource(R.string.connection_error)))
+    } catch (e: Exception) {
+        setState(errorFactory(false, StringValue.DynamicString(e.message.toString())))
     }
 }

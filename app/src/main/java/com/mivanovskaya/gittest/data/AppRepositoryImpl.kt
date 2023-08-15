@@ -12,6 +12,8 @@ import com.mivanovskaya.gittest.domain.toRepoDetails
 import com.mivanovskaya.gittest.domain.toUserInfo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
+
 import javax.inject.Inject
 
 class AppRepositoryImpl @Inject constructor(
@@ -43,10 +45,15 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun getRepositoryReadme(
         ownerName: String, repositoryName: String, branchName: String
-    ): String = withContext(ioDispatcher) {
-        userApi.getRepositoryReadme(
-            ownerName = ownerName, repositoryName = repositoryName, branchName = branchName
-        )
+    ): String? = withContext(ioDispatcher) {
+        try {
+            userApi.getRepositoryReadme(
+                ownerName = ownerName, repositoryName = repositoryName, branchName = branchName
+            )
+        } catch (e: HttpException) {
+            if (e.code() == 404) null
+            else throw e
+        }
     }
 
     override suspend fun signIn(token: String): UserInfo = withContext(ioDispatcher) {
