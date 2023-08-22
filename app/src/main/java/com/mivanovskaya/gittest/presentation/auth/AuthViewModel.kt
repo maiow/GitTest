@@ -58,7 +58,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun isValid(token: String): Boolean =
-        token.contains(Regex("^ghp_[a-zA-Z0-9]{36}$"))
+        token.contains(Regex("^(gh[ps]_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})\$"))
 
     sealed interface State {
         object Idle : State
