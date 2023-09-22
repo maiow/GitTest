@@ -1,5 +1,7 @@
 package com.mivanovskaya.gittest.presentation.detail_info
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spanned
 import android.view.LayoutInflater
@@ -129,6 +131,14 @@ class DetailInfoFragment : BaseFragment<FragmentDetailInfoBinding>() {
                 state.githubRepo.watchersCount
             )
             link.text = state.githubRepo.htmlUrl
+            setClickListenerForLink(state.githubRepo.htmlUrl)
+        }
+    }
+
+    private fun setClickListenerForLink(url: String) {
+        binding.link.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
         }
     }
 
